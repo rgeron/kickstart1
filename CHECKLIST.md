@@ -83,13 +83,31 @@
   - Create Action
   - Log Form Values
   - Sign Up User on Server
-- Sign In User via SERVER ACTIONS PT1 **HERE HERE HERE**
+- Sign In User via SERVER ACTIONS
   - Create Action
   - Log Form Values
   - Sign In User on Server
   - Showcase - No Cookies
   - Manually Set Cookies
   - Showcase - Cookies
-- Get Additional Session Properties
+  - Passing Headers to Sign In
 - PLUGINS - **nextCookies()**
 - FINISH PART 2
+
+== PART 3 ==
+
+- Get Session on Client
+  - Create Get Started Button
+  - Destructure useSession
+  - Showcase
+- OPTIONS - **session.expiresIn**
+  - Change to 15 seconds
+  - Showcase
+  - Change to 30 days
+- Middleware
+  - check for existence of a session cookie
+  - showcase on auth routes
+- Error Handling
+- Hooks
+  - Validate Email
+  - Transform Name

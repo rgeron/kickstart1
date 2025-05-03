@@ -1,41 +1,34 @@
 "use client";
 
-import { signUp } from "@/lib/auth-client";
+// import { signUp } from "@/lib/auth-client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signUpEmailAction } from "@/actions/sign-up-email.action";
 
 export const RegisterForm = () => {
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
+
   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
 
+    setIsPending(true);
+
     const formData = new FormData(evt.currentTarget);
 
-    const name = String(formData.get("name"));
-    if (!name) return toast.error("Please enter your name");
+    const { error } = await signUpEmailAction(formData);
 
-    const email = String(formData.get("email"));
-    if (!email) return toast.error("Please enter your email");
-
-    const password = String(formData.get("password"));
-    if (!password) return toast.error("Please enter your password");
-
-    await signUp.email(
-      {
-        name,
-        email,
-        password,
-      },
-      {
-        onRequest: () => {},
-        onResponse: () => {},
-        onError: (ctx) => {
-          toast.error(ctx.error.message);
-        },
-        onSuccess: () => {},
-      }
-    );
+    if (error) {
+      toast.error(error);
+      setIsPending(false);
+    } else {
+      toast.success("Registration complete. You're all set.");
+      router.push("/auth/login");
+    }
   }
 
   return (
@@ -55,8 +48,8 @@ export const RegisterForm = () => {
         <Input type="password" id="password" name="password" />
       </div>
 
-      <Button type="submit" className="w-full">
-        Register
+      <Button type="submit" className="w-full" disabled={isPending}>
+        {isPending ? "Registering..." : "Register"}
       </Button>
     </form>
   );

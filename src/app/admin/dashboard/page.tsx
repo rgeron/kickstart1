@@ -3,9 +3,11 @@ import {
   PlaceholderDeleteUserButton,
 } from "@/components/delete-user-button";
 import { ReturnButton } from "@/components/return-button";
+import { UserRoleSelect } from "@/components/user-role-select";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import type { UserRole } from "@/generated/prisma";
 
 export default async function Page() {
   const headersList = await headers();
@@ -75,7 +77,12 @@ export default async function Page() {
                 <td className="px-4 py-2">{user.id.slice(0, 8)}</td>
                 <td className="px-4 py-2">{user.name}</td>
                 <td className="px-4 py-2">{user.email}</td>
-                <td className="px-4 py-2 text-center">{user.role}</td>
+                <td className="px-4 py-2 text-center">
+                  <UserRoleSelect
+                    userId={user.id}
+                    role={user.role as UserRole}
+                  />
+                </td>
                 <td className="px-4 py-2 text-center">
                   {user.role === "USER" ? (
                     <DeleteUserButton userId={user.id} />

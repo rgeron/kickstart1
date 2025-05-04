@@ -68,9 +68,24 @@ export const auth = betterAuth({
   session: {
     expiresIn: 30 * 24 * 60 * 60,
   },
+  account: {
+    accountLinking: {
+      enabled: false,
+    },
+  },
   advanced: {
     database: {
       generateId: false,
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: String(process.env.GOOGLE_CLIENT_ID),
+      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET),
+    },
+    github: {
+      clientId: String(process.env.GITHUB_CLIENT_ID),
+      clientSecret: String(process.env.GITHUB_CLIENT_SECRET),
     },
   },
   plugins: [

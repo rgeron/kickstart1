@@ -193,6 +193,7 @@
   - add to client instance
   - Create UI
   - adjust hooks
+- Cookie Cache
 - FINISH PART 7
 
 THANK YOU FOR WATCHING

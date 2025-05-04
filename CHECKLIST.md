@@ -178,3 +178,4 @@
 - Reset Password
   - Page / Form / Success
   - Showcase
+- FINISH PART 6

@@ -43,6 +43,7 @@ export const LoginForm = () => {
         <div className="flex justify-between items-center gap-2">
           <Label htmlFor="password">Password</Label>
           <Link
+            tabIndex={-1}
             href="/auth/forgot-password"
             className="text-sm italic text-muted-foreground hover:text-foreground"
           >

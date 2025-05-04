@@ -1,6 +1,8 @@
+import { ChangePasswordForm } from "@/components/change-password-form";
 import { ReturnButton } from "@/components/return-button";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
+import { UpdateUserForm } from "@/components/update-user-form";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -51,9 +53,39 @@ export default async function Page() {
         </Button>
       </div>
 
+      {session.user.image ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={session.user.image}
+          alt="User Image"
+          className="size-32 border border-primary rounded-md object-cover"
+        />
+      ) : (
+        <div className="size-32 border border-primary rounded-md bg-primary text-primary-foreground flex items-center justify-center">
+          <span className="uppercase text-lg font-bold">
+            {session.user.name.slice(0, 2)}
+          </span>
+        </div>
+      )}
+
       <pre className="text-sm overflow-clip">
         {JSON.stringify(session, null, 2)}
       </pre>
+
+      <div className="space-y-4 p-4 rounded-b-md  border border-t-8 border-blue-600">
+        <h2 className="text-2xl font-bold">Update User</h2>
+
+        <UpdateUserForm
+          name={session.user.name}
+          image={session.user.image ?? ""}
+        />
+      </div>
+
+      <div className="space-y-4 p-4 rounded-b-md  border border-t-8 border-red-600">
+        <h2 className="text-2xl font-bold">Change Password</h2>
+
+        <ChangePasswordForm />
+      </div>
     </div>
   );
 }

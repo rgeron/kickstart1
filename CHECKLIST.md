@@ -182,12 +182,17 @@
 
 == PART 7 ==
 
+- Show the image
 - Updating User
   - change name / image
+  - update hook
   - updating password
 - Custom Sessions
-  - type inference for client workaround
+  - type inference for plugins workaround
 - PLUGINS - **Magic Link**
+  - add to client instance
+  - Create UI
+  - adjust hooks
 - FINISH PART 7
 
 THANK YOU FOR WATCHING

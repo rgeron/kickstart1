@@ -175,3 +175,15 @@
 - Reset Password
   - Page / Form / Success
   - Showcase
+
+== PART 7 ==
+
+- Updating User
+  - change name / image
+  - updating password
+- Custom Sessions
+  - type inference for client workaround
+- PLUGINS - **Magic Link**
+- FINISH PART 7
+
+THANK YOU FOR WATCHING

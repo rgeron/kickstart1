@@ -19,15 +19,11 @@ export const auth = betterAuth({
     expiresIn: 60 * 60,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      const email = user.email.endsWith("@example.com")
-        ? "destocotz@yahoo.com"
-        : user.email;
-
       const link = new URL(url);
       link.searchParams.set("callbackURL", "/auth/verify");
 
       await sendEmailAction({
-        to: email,
+        to: user.email,
         subject: "Verify your email address",
         meta: {
           description:
@@ -47,12 +43,8 @@ export const auth = betterAuth({
     },
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      const email = user.email.endsWith("@example.com")
-        ? "destocotz@yahoo.com"
-        : user.email;
-
       await sendEmailAction({
-        to: email,
+        to: user.email,
         subject: "Reset your password",
         meta: {
           description: "Please click the link below to reset your password.",

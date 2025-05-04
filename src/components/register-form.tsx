@@ -49,7 +49,7 @@ export const RegisterForm = () => {
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "Registering..." : "Register"}
+        Register
       </Button>
     </form>
   );

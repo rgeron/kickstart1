@@ -44,7 +44,7 @@ export const LoginForm = () => {
       </div>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "Logging in..." : "Login"}
+        Login
       </Button>
     </form>
   );

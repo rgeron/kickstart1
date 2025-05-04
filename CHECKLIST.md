@@ -111,3 +111,40 @@
 - Hooks
   - Validate Email
   - Transform Name
+
+== PART 4 ==
+
+- Roles (Custom Method)
+- Prisma
+  - Add UserRole Enum
+  - Push changes `npx prisma db push`
+- User
+  - Show field is added beacuse of `@default`
+  - Truncate Tables
+  - Create new User
+- Profile PT1
+  - Show role is not typed in `session.user`
+- OPTIONS - **user.additionalFields**
+  - Showcase `input` option
+- Profile PT2
+  - Show role is now typed and added to `session.user`
+- ISSUE: Client Session has no Context of the Role
+  - Cute circle on `get-started-button.tsx`
+  - InferAdditionalFields plugin on Client
+- Admin Panel
+  - Create Page / Link
+  - Manually Change Role
+  - Update Middleware
+  - Guard `/admin/dashboard`
+  - List Users With Prisma Query
+  - Delete User With Prisma Query
+- Database Hooks
+- Roles (Admin Plugin)
+  - generate auth tables `npx @better-auth/cli generate --output=roles.schema.prisma`
+  - compare and contrast (look at Schema section)
+  - Push changes `npx prisma db push`
+  - Create Permissions (No Posts)
+  - Add to `lib/auth.ts` and `lib/auth-client.ts`
+  - List Users With Admin Plugin
+  - EXERCISE: Delete User With Admin Plugin
+  - Change Permissions (With Posts)

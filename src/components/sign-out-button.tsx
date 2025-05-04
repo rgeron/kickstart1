@@ -37,7 +37,7 @@ export const SignOutButton = () => {
       variant="destructive"
       disabled={isPending}
     >
-      {isPending ? "Signing out..." : "Sign out"}
+      Sign out
     </Button>
   );
 };

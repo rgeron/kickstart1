@@ -13,6 +13,7 @@ export const {
   signUp,
   signOut,
   useSession,
+  admin,
   sendVerificationEmail,
   forgetPassword,
   resetPassword,

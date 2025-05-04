@@ -1,12 +1,9 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import {
-  //  cookies,
-  headers,
-} from "next/headers";
-// import { parseSetCookieHeader } from "better-auth/cookies";
+import { auth, ErrorCode } from "@/lib/auth";
+import { headers } from "next/headers";
 import { APIError } from "better-auth/api";
+import { redirect } from "next/navigation";
 
 export async function signInEmailAction(formData: FormData) {
   const email = String(formData.get("email"));
@@ -16,42 +13,24 @@ export async function signInEmailAction(formData: FormData) {
   if (!password) return { error: "Please enter your password" };
 
   try {
-    // const res =
     await auth.api.signInEmail({
       headers: await headers(),
       body: {
         email,
         password,
       },
-      //   asResponse: true,
     });
-
-    // ==== MANUALLY SET COOKIES ====
-    // const setCookieHeader = res.headers.get("set-cookie");
-    // if (setCookieHeader) {
-    //   const cookie = parseSetCookieHeader(setCookieHeader);
-    //   const cookieStore = await cookies();
-
-    //   const [key, props] = [...cookie.entries()][0];
-    //   const value = props.value;
-    //   const maxAge = props["max-age"];
-    //   const path = props.path;
-    //   const httpOnly = props.httponly;
-    //   const sameSite = props.samesite;
-
-    //   cookieStore.set(key, decodeURIComponent(value), {
-    //     maxAge,
-    //     path,
-    //     httpOnly,
-    //     sameSite,
-    //   });
-    // }
-    // ==============================
-
     return { error: null };
   } catch (err) {
     if (err instanceof APIError) {
-      return { error: err.message };
+      const errCode = err.body ? (err.body.code as ErrorCode) : "UNKNOWN";
+      console.dir(err, { depth: 5 });
+      switch (errCode) {
+        case "EMAIL_NOT_VERIFIED":
+          redirect("/auth/verify?error=email_not_verified");
+        default:
+          return { error: err.message };
+      }
     }
 
     return { error: "Internal Server Error" };

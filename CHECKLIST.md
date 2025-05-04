@@ -148,3 +148,12 @@
   - List Users With Admin Plugin
   - EXERCISE: Delete User With Admin Plugin
   - Change Permissions (With Posts)
+
+== PART 5 ==
+
+- Google OAuth
+  - Create Buttons
+- GitHub OAuth
+- Account Linking
+- Error Handling
+  - `/auth/login/error`

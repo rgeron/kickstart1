@@ -1,8 +1,8 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { createAuthMiddleware, APIError } from "better-auth/api";
-import { admin } from "better-auth/plugins";
+import { admin, customSession, magicLink } from "better-auth/plugins";
 
 import { prisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword } from "@/lib/argon2";
@@ -10,7 +10,7 @@ import { normalizeName, VALID_DOMAINS } from "@/lib/utils";
 import { ac, roles } from "@/lib/permissions";
 import { sendEmailAction } from "@/actions/send-email.action";
 
-export const auth = betterAuth({
+const options = {
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -65,6 +65,22 @@ export const auth = betterAuth({
           });
         }
 
+        const name = normalizeName(ctx.body.name);
+
+        return {
+          context: { ...ctx, body: { ...ctx.body, name } },
+        };
+      }
+
+      if (ctx.path === "/sign-in/magic-link") {
+        const name = normalizeName(ctx.body.name);
+
+        return {
+          context: { ...ctx, body: { ...ctx.body, name } },
+        };
+      }
+
+      if (ctx.path === "/update-user") {
         const name = normalizeName(ctx.body.name);
 
         return {
@@ -127,6 +143,43 @@ export const auth = betterAuth({
       ac,
       roles,
     }),
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        await sendEmailAction({
+          to: email,
+          subject: "Magic Link Login",
+          meta: {
+            description: "Please click the link below to log in.",
+            link: String(url),
+          },
+        });
+      },
+    }),
+  ],
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth({
+  ...options,
+  plugins: [
+    ...(options.plugins ?? []),
+    customSession(async ({ user, session }) => {
+      return {
+        session: {
+          expiresAt: session.expiresAt,
+          token: session.token,
+          userAgent: session.userAgent,
+        },
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          createdAt: user.createdAt,
+          role: user.role,
+          giraffeFact: "giraffes can sometimes nap with one eye open",
+        },
+      };
+    }, options),
   ],
 });
 

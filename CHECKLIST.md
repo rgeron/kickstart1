@@ -148,6 +148,8 @@
   - List Users With Admin Plugin
   - EXERCISE: Delete User With Admin Plugin
   - Change Permissions (With Posts)
+- Create Dropdown to Change Role for Admins
+- FINISH PART 4
 
 == PART 5 ==
 

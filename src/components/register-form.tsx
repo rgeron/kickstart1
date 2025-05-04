@@ -27,7 +27,7 @@ export const RegisterForm = () => {
       setIsPending(false);
     } else {
       toast.success("Registration complete. You're all set.");
-      router.push("/auth/login");
+      router.push("/auth/register/success");
     }
   }
 

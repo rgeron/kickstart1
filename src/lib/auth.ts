@@ -8,11 +8,35 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword } from "@/lib/argon2";
 import { normalizeName, VALID_DOMAINS } from "@/lib/utils";
 import { ac, roles } from "@/lib/permissions";
+import { sendEmailAction } from "@/actions/send-email.action";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  emailVerification: {
+    sendOnSignUp: true,
+    expiresIn: 60 * 60,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      const email = user.email.endsWith("@example.com")
+        ? "destocotz@yahoo.com"
+        : user.email;
+
+      const link = new URL(url);
+      link.searchParams.set("callbackURL", "/auth/verify");
+
+      await sendEmailAction({
+        to: email,
+        subject: "Verify your email address",
+        meta: {
+          description:
+            "Please verify your email address to complete the registration process.",
+          link: String(link),
+        },
+      });
+    },
+  },
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
@@ -20,6 +44,21 @@ export const auth = betterAuth({
     password: {
       hash: hashPassword,
       verify: verifyPassword,
+    },
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      const email = user.email.endsWith("@example.com")
+        ? "destocotz@yahoo.com"
+        : user.email;
+
+      await sendEmailAction({
+        to: email,
+        subject: "Reset your password",
+        meta: {
+          description: "Please click the link below to reset your password.",
+          link: String(url),
+        },
+      });
     },
   },
   hooks: {

@@ -1,7 +1,6 @@
 "use client";
 
 import { signInEmailAction } from "@/actions/user-management/sign-in-email.action";
-import { signIn } from "@/lib/auth/auth-client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,20 +11,19 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SignInOauthButton } from "./sign-in-oauth-button";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { StarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { MagicLinkLoginForm } from "./magic-link-login-form";
+import { SignInOauthButton } from "./sign-in-oauth-button";
 
 export const LoginForm = ({
   className,
   ...props
 }: React.ComponentProps<"div">) => {
   const [isPending, setIsPending] = useState(false);
-  const [isMagicLinkPending, setIsMagicLinkPending] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
@@ -44,34 +42,6 @@ export const LoginForm = ({
       toast.success("Login successful. Good to have you back.");
       router.push("/profile");
     }
-  }
-
-  async function handleMagicLink(evt: React.FormEvent<HTMLFormElement>) {
-    evt.preventDefault();
-    const formData = new FormData(evt.currentTarget);
-    const email = String(formData.get("magicEmail"));
-
-    if (!email) return toast.error("Please enter your email.");
-
-    await signIn.magicLink({
-      email,
-      name: email.split("@")[0],
-      callbackURL: "/profile",
-      fetchOptions: {
-        onRequest: () => {
-          setIsMagicLinkPending(true);
-        },
-        onResponse: () => {
-          setIsMagicLinkPending(false);
-        },
-        onError: (ctx) => {
-          toast.error(ctx.error.message);
-        },
-        onSuccess: () => {
-          toast.success("Check your email for the magic link!");
-        },
-      },
-    });
   }
 
   return (
@@ -116,7 +86,7 @@ export const LoginForm = ({
               </div>
             </div>
           </form>
-          
+
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -128,31 +98,18 @@ export const LoginForm = ({
                 </span>
               </div>
             </div>
-            
-            <form onSubmit={handleMagicLink} className="mt-4">
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  name="magicEmail"
-                  placeholder="Enter your email"
-                  className="flex-1"
-                />
-                <Button 
-                  type="submit" 
-                  variant="outline" 
-                  disabled={isMagicLinkPending}
-                  className="shrink-0"
-                >
-                  <StarIcon className="w-4 h-4 mr-1" />
-                  {isMagicLinkPending ? "Sending..." : "Send"}
-                </Button>
-              </div>
-            </form>
+
+            <div className="mt-4">
+              <MagicLinkLoginForm />
+            </div>
           </div>
-          
+
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/auth/register" className="underline underline-offset-4">
+            <Link
+              href="/auth/register"
+              className="underline underline-offset-4"
+            >
               Sign up
             </Link>
           </div>

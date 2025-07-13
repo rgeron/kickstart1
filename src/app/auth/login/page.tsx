@@ -1,7 +1,5 @@
 import { LoginForm } from "@/components/auth-management/login-form";
-import { MagicLinkLoginForm } from "@/components/auth-management/magic-link-login-form";
 import { ReturnButton } from "@/components/buttons/return-button";
-import Link from "next/link";
 
 export default function Page() {
   return (
@@ -13,19 +11,8 @@ export default function Page() {
       </div>
 
       <div className="space-y-4">
-        <MagicLinkLoginForm />
-
         <LoginForm />
-
-        <p className="text-muted-foreground text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="/auth/register" className="hover:text-foreground">
-            Register
-          </Link>
-        </p>
       </div>
-
-      <hr className="max-w-sm" />
     </div>
   );
 }

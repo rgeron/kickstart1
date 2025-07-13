@@ -31,7 +31,7 @@ export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUplo
     },
   ] = useFileUpload({
     accept: "image/*",
-    maxSize: 5 * 1024 * 1024, // 5MB limit
+    maxSize: 10 * 1024 * 1024, // 10MB limit to match server config
     onFilesAdded: async (addedFiles) => {
       if (addedFiles.length > 0) {
         await handleFileUpload(addedFiles[0].file as File)
@@ -45,6 +45,14 @@ export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUplo
     try {
       setIsUploading(true)
       
+      // Check file size before upload (10MB limit to match server config)
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(
+          "Image is too large (max 10MB). Please compress your image using tinypng.com and try again."
+        )
+        return
+      }
+      
       const formData = new FormData()
       formData.append("file", file)
       
@@ -52,7 +60,14 @@ export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUplo
       const uploadResult = await uploadFileAction(formData, userId)
       
       if (!uploadResult.success) {
-        toast.error(uploadResult.error || "Failed to upload image")
+        // Check if it's a size-related error
+        if (uploadResult.error?.includes("exceeded") || uploadResult.error?.includes("limit")) {
+          toast.error(
+            "Image is too large. Please compress your image using tinypng.com and try again."
+          )
+        } else {
+          toast.error(uploadResult.error || "Failed to upload image")
+        }
         return
       }
 
@@ -69,9 +84,17 @@ export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUplo
           },
         },
       })
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Avatar upload error:", error)
-      toast.error("Failed to update avatar")
+      
+      // Handle specific size limit errors
+      if ((error as any)?.message?.includes("exceeded") || (error as any)?.message?.includes("limit") || (error as any)?.statusCode === 413) {
+        toast.error(
+          "Image is too large. Please compress your image using tinypng.com and try again."
+        )
+      } else {
+        toast.error("Failed to update avatar")
+      }
     } finally {
       setIsUploading(false)
     }
@@ -170,7 +193,7 @@ export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUplo
           Click or drag to upload avatar
         </p>
         <p className="text-xs text-muted-foreground">
-          Max size: 5MB
+          Max size: 10MB
         </p>
       </div>
     </div>

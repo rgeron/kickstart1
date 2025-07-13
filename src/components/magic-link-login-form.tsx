@@ -1,12 +1,12 @@
 "use client";
 
+import { signIn } from "@/lib/auth/auth-client";
+import { StarIcon } from "lucide-react";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { StarIcon } from "lucide-react";
-import { signIn } from "@/lib/auth-client";
-import { toast } from "sonner";
 
 export const MagicLinkLoginForm = () => {
   const [isPending, setIsPending] = useState(false);

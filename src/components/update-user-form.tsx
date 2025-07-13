@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { updateUser } from "@/lib/auth-client";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { updateUser } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface UpdateUserFormProps {
   name: string;

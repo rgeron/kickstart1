@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { signIn } from "@/lib/auth-client";
+import { signIn } from "@/lib/auth/auth-client";
+import { useState } from "react";
 
 interface SignInOauthButtonProps {
   provider: "google" | "github";

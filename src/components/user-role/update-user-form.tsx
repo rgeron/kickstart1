@@ -50,19 +50,44 @@ export const UpdateUserForm = ({ name, image }: UpdateUserFormProps) => {
   }
 
   return (
-    <form className="max-w-sm w-full space-y-4" onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="name">Name</Label>
-        <Input id="name" name="name" defaultValue={name} />
+    <form className="w-full space-y-4" onSubmit={handleSubmit}>
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="name" className="text-sm font-medium">
+            Full Name
+          </Label>
+          <Input 
+            id="name" 
+            name="name" 
+            defaultValue={name}
+            placeholder="Enter your full name"
+            className="w-full"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="image" className="text-sm font-medium">
+            Profile Image URL
+          </Label>
+          <Input 
+            id="image" 
+            name="image" 
+            defaultValue={image}
+            placeholder="https://example.com/image.jpg"
+            className="w-full"
+          />
+          <p className="text-xs text-muted-foreground">
+            Enter a URL for your profile image
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="image">Image</Label>
-        <Input id="image" name="image" defaultValue={image} />
-      </div>
-
-      <Button type="submit" disabled={isPending}>
-        Update User
+      <Button 
+        type="submit" 
+        disabled={isPending}
+        className="w-full sm:w-auto"
+      >
+        {isPending ? "Updating..." : "Update Profile"}
       </Button>
     </form>
   );

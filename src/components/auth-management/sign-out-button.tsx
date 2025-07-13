@@ -34,10 +34,11 @@ export const SignOutButton = () => {
     <Button
       onClick={handleClick}
       size="sm"
-      variant="destructive"
+      variant="outline"
       disabled={isPending}
+      className="hover:bg-foreground hover:text-destructive-foreground border-destructive text-destructive"
     >
-      Sign out
+      {isPending ? "Signing out..." : "Sign out"}
     </Button>
   );
 };

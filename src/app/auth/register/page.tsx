@@ -1,7 +1,5 @@
 import { RegisterForm } from "@/components/auth-management/register-form";
-import { SignInOauthButton } from "@/components/auth-management/sign-in-oauth-button";
 import { ReturnButton } from "@/components/buttons/return-button";
-import Link from "next/link";
 
 export default function Page() {
   return (
@@ -14,20 +12,6 @@ export default function Page() {
 
       <div className="space-y-4">
         <RegisterForm />
-
-        <p className="text-muted-foreground text-sm">
-          Already have an account?{" "}
-          <Link href="/auth/login" className="hover:text-foreground">
-            Login
-          </Link>
-        </p>
-      </div>
-
-      <hr className="max-w-sm" />
-
-      <div className="flex flex-col max-w-sm gap-4">
-        <SignInOauthButton provider="google" signUp />
-        <SignInOauthButton provider="github" signUp />
       </div>
     </div>
   );

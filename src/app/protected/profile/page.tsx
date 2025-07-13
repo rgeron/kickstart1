@@ -1,6 +1,7 @@
 import { ChangePasswordForm } from "@/components/auth-management/change-password-form";
 import { SignOutButton } from "@/components/auth-management/sign-out-button";
 import { ReturnButton } from "@/components/buttons/return-button";
+import { AvatarUpload } from "@/components/profile/avatar-upload";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UpdateUserForm } from "@/components/user-role/update-user-form";
@@ -56,20 +57,10 @@ export default async function Page() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-col items-center space-y-4">
-                {session.user.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={session.user.image}
-                    alt="User Image"
-                    className="size-24 border-2 border-primary rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="size-24 border-2 border-primary rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-                    <span className="uppercase text-xl font-bold">
-                      {session.user.name.slice(0, 2)}
-                    </span>
-                  </div>
-                )}
+                <AvatarUpload 
+                  userId={session.user.id}
+                  currentImage={session.user.image || undefined}
+                />
                 
                 <div className="text-center">
                   <h3 className="font-semibold text-lg">{session.user.name}</h3>

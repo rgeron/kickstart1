@@ -1,14 +1,14 @@
 "use client";
 
 // import { signIn } from "@/lib/auth-client";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { signInEmailAction } from "@/actions/user-management/sign-in-email.action";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { signInEmailAction } from "@/actions/sign-in-email.action";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
   const [isPending, setIsPending] = useState(false);

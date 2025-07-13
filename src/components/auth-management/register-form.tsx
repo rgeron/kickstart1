@@ -1,13 +1,13 @@
 "use client";
 
 // import { signUp } from "@/lib/auth-client";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { signUpEmailAction } from "@/actions/user-management/sign-up-email.action";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { signUpEmailAction } from "@/actions/sign-up-email.action";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export const RegisterForm = () => {
   const [isPending, setIsPending] = useState(false);

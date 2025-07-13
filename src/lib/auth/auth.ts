@@ -4,7 +4,7 @@ import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { admin, customSession, magicLink } from "better-auth/plugins";
 
-import { sendEmailAction } from "@/actions/send-email.action";
+import { sendEmailAction } from "@/actions/emails/send-email.action";
 import { hashPassword, verifyPassword } from "@/lib//auth/argon2";
 import { ac, roles } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";

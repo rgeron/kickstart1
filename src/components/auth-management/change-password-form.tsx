@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { changePasswordAction } from "@/actions/user-management/change-password.action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { changePasswordAction } from "@/actions/change-password.action";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const ChangePasswordForm = () => {

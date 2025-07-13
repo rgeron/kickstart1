@@ -1,6 +1,6 @@
 "use server";
 
-import { resendMailAdapter } from "@/lib/mail/resend";
+import { resendMailAdapter } from "@/lib/emails/resend";
 
 const styles = {
   container:

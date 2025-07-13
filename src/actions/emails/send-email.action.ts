@@ -23,7 +23,7 @@ export async function sendEmailAction({
   };
 }) {
   const emailParams = {
-    from: process.env.FROM_EMAIL || "noreply@example.com",
+    from: process.env.RESEND_EMAIL_FROM || "noreply@example.com",
     to,
     subject: `BetterAuthy - ${subject}`,
     html: `
@@ -37,12 +37,12 @@ export async function sendEmailAction({
 
   try {
     const result = await resendMailAdapter.send(emailParams);
-    
+
     if (result.error) {
       console.error("[SendEmail]:", result.error);
       return { success: false };
     }
-    
+
     return { success: true };
   } catch (err) {
     console.error("[SendEmail]:", err);

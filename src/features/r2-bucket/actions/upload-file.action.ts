@@ -5,7 +5,7 @@ import { uploadFileToS3 } from "../utils/awss3.utils";
 export async function uploadFileAction(formData: FormData, userId: string) {
   try {
     const file = formData.get("file") as File;
-    
+
     if (!file) {
       return {
         success: false,

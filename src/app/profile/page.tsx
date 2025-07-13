@@ -3,7 +3,7 @@ import { ReturnButton } from "@/components/return-button";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
 import { UpdateUserForm } from "@/components/update-user-form";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";

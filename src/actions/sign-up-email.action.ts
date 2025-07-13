@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, ErrorCode } from "@/lib/auth";
+import { auth, ErrorCode } from "@/lib/auth/auth";
 import { APIError } from "better-auth/api";
 
 export async function signUpEmailAction(formData: FormData) {

@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { APIError } from "better-auth/api";
 import { headers } from "next/headers";
 

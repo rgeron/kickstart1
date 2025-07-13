@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, ErrorCode } from "@/lib/auth";
+import { auth, ErrorCode } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { APIError } from "better-auth/api";
 import { redirect } from "next/navigation";

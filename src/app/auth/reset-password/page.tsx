@@ -1,5 +1,5 @@
-import { ResetPasswordForm } from "@/components/reset-password-form";
-import { ReturnButton } from "@/components/return-button";
+import { ResetPasswordForm } from "@/components/auth-management/reset-password-form";
+import { ReturnButton } from "@/components/buttons/return-button";
 import { redirect } from "next/navigation";
 
 interface PageProps {

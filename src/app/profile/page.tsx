@@ -1,8 +1,8 @@
-import { ChangePasswordForm } from "@/components/change-password-form";
-import { ReturnButton } from "@/components/return-button";
-import { SignOutButton } from "@/components/sign-out-button";
+import { ChangePasswordForm } from "@/components/auth-management/change-password-form";
+import { SignOutButton } from "@/components/auth-management/sign-out-button";
+import { ReturnButton } from "@/components/buttons/return-button";
 import { Button } from "@/components/ui/button";
-import { UpdateUserForm } from "@/components/update-user-form";
+import { UpdateUserForm } from "@/components/user-role/update-user-form";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import Link from "next/link";

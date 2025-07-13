@@ -1,4 +1,4 @@
-import { ReturnButton } from "@/components/return-button";
+import { ReturnButton } from "@/components/buttons/return-button";
 
 export default function Page() {
   return (

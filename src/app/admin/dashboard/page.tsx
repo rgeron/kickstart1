@@ -1,13 +1,13 @@
 import {
   DeleteUserButton,
   PlaceholderDeleteUserButton,
-} from "@/components/delete-user-button";
-import { ReturnButton } from "@/components/return-button";
-import { UserRoleSelect } from "@/components/user-role-select";
+} from "@/components/auth-management/delete-user-button";
+import { ReturnButton } from "@/components/buttons/return-button";
+import { UserRoleSelect } from "@/components/user-role/user-role-select";
+import type { UserRole } from "@/generated/prisma";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import type { UserRole } from "@/generated/prisma";
 
 export default async function Page() {
   const headersList = await headers();

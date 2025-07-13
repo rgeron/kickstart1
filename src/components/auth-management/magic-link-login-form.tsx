@@ -4,9 +4,9 @@ import { signIn } from "@/lib/auth/auth-client";
 import { StarIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 export const MagicLinkLoginForm = () => {
   const [isPending, setIsPending] = useState(false);

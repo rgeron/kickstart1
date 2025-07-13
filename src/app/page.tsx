@@ -1,4 +1,4 @@
-import { GetStartedButton } from "@/components/get-started-button";
+import { GetStartedButton } from "@/components/buttons/get-started-button";
 
 export default function Page() {
   return (

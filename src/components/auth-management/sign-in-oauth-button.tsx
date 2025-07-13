@@ -20,7 +20,7 @@ export const SignInOauthButton = ({
 
     await signIn.social({
       provider,
-      callbackURL: "/profile",
+      callbackURL: "/protected",
       errorCallbackURL: "/auth/login/error",
     });
 

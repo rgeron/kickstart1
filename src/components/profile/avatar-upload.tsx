@@ -3,6 +3,7 @@
 import { CircleUserRoundIcon, XIcon } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 import { useFileUpload } from "@/hooks/use-file-upload"
 import { Button } from "@/components/ui/button"
@@ -17,6 +18,7 @@ interface AvatarUploadProps {
 
 export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
+  const router = useRouter()
   
   const [
     { files, isDragging },
@@ -81,6 +83,8 @@ export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUplo
           onSuccess: () => {
             toast.success("Avatar updated successfully")
             onImageUpdate?.(uploadResult.url!)
+            // Refresh the page to show the updated avatar
+            setTimeout(() => router.refresh(), 500)
           },
         },
       })
@@ -119,6 +123,8 @@ export function AvatarUpload({ userId, currentImage, onImageUpdate }: AvatarUplo
           onSuccess: () => {
             toast.success("Avatar removed successfully")
             onImageUpdate?.("")
+            // Refresh the page to show the updated avatar
+            setTimeout(() => router.refresh(), 500)
           },
         },
       })

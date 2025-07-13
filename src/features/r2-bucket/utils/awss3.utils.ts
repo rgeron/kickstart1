@@ -30,7 +30,7 @@ export async function uploadFileToS3(params: {
     await s3Client.send(command);
 
     return {
-      url: `${process.env.R2_URL}/${uniqueFilename}`,
+      url: `${process.env.R2_URL}/${process.env.AWS_S3_BUCKET_NAME}/${uniqueFilename}`,
     };
   } catch (error) {
     throw error;

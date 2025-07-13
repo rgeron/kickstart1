@@ -81,7 +81,7 @@ const options = {
       }
 
       if (ctx.path === "/update-user") {
-        const name = normalizeName(ctx.body.name);
+        const name = ctx.body.name ? normalizeName(ctx.body.name) : ctx.body.name;
 
         return {
           context: { ...ctx, body: { ...ctx.body, name } },

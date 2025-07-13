@@ -14,7 +14,7 @@ export function normalizeName(name: string) {
 }
 
 export const VALID_DOMAINS = () => {
-  const domains = ["gmail.com", "yahoo.com", "outlook.com"];
+  const domains = ["gmail.com", "yahoo.com", "outlook.com", "hec.edu"];
 
   if (process.env.NODE_ENV === "development") {
     domains.push("example.com");

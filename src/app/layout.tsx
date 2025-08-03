@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeSwitch } from "@/components/ui/theme-switch-button";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +30,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeSwitch />
-        </div>
-        {children}
-        <Toaster position="top-center" richColors />
+        <NuqsAdapter>
+          <div className="fixed top-4 right-4 z-50">
+            <ThemeSwitch />
+          </div>
+          {children}
+          <Toaster position="top-center" richColors />
+        </NuqsAdapter>
       </body>
     </html>
   );

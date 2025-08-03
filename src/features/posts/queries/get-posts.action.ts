@@ -1,8 +1,8 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { buildPostsQuery, type PostWithRelations } from "@/lib/post-filters";
 import type { PostSearchParams } from "@/lib/post-filters";
+import { buildPostsQuery, type PostWithRelations } from "@/lib/post-filters";
+import { prisma } from "@/lib/prisma";
 
 export interface GetPostsResult {
   posts: PostWithRelations[];
@@ -16,11 +16,7 @@ export async function getPostsAction(
   params: PostSearchParams & { pageSize?: number } = {}
 ): Promise<GetPostsResult> {
   try {
-    const {
-      page = 1,
-      pageSize = 10,
-      ...searchParams
-    } = params;
+    const { page = 1, pageSize = 10, ...searchParams } = params;
 
     // Build the query based on search parameters
     const { where, orderBy } = buildPostsQuery(searchParams);
@@ -107,17 +103,14 @@ export async function getUserPostsAction(
     };
 
     const { where, orderBy } = buildPostsQuery(searchParamsWithUser);
-    
+
     // Add user filter to where clause
     const userWhere = {
       ...where,
       userId,
     };
 
-    const {
-      page = 1,
-      pageSize = 10,
-    } = params;
+    const { page = 1, pageSize = 10 } = params;
 
     const skip = (page - 1) * pageSize;
     const totalCount = await prisma.post.count({ where: userWhere });

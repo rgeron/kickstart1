@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { PostsListWithSearch } from "@/components/posts/posts-list-with-search";
-import { getPostsAction } from "@/actions/posts/get-posts.action";
+import { PostsListWithSearch } from "@/features/posts/components/posts-list-with-search";
 import type { PostWithRelations } from "@/lib/post-filters";
+import { getPostsAction } from "@/features/posts/queries/get-posts.action";
 
 // Mock data for demonstration - replace with actual data fetching
 const mockPosts: PostWithRelations[] = [

@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth/auth";
 import { canUserCreatePost, canUserInteract } from "@/lib/permissions";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { CreatePostForm } from "@/features/posts/components/create-post-form";
 
 export default async function Page() {
   const headersList = await headers();
@@ -54,12 +55,11 @@ export default async function Page() {
                   : "Browse posts and join the discussion by signing up"}
               </p>
             </div>
-            {canUserCreatePost(userRole) && (
-              <Button asChild>
-                <Link href="/posts/create">Create Post</Link>
-              </Button>
-            )}
           </div>
+        )}
+
+        {session && canUserCreatePost(userRole) && (
+          <CreatePostForm />
         )}
 
         {!session && (

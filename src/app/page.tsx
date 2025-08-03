@@ -12,12 +12,27 @@ import { getPostsAction } from "@/features/posts/queries/get-posts.action";
 async function PostsList() {
   try {
     const { posts } = await getPostsAction({ pageSize: 10 });
+    if (posts.length === 0) {
+      return (
+        <div className="text-center py-8 text-muted-foreground">
+          <div className="text-6xl mb-4">📝</div>
+          <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
+          <p>Be the first to create a post!</p>
+        </div>
+      );
+    }
     return <PostsListWithSearch posts={posts} pageSize={10} />;
   } catch (error) {
     console.error("Failed to load posts:", error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return (
-      <div className="text-center py-8 text-muted-foreground">
-        Failed to load posts. Please try again later.
+      <div className="text-center py-8">
+        <div className="text-destructive mb-2">Failed to load posts</div>
+        <div className="text-sm text-muted-foreground">
+          {errorMessage.includes('database') || errorMessage.includes('connection') 
+            ? 'Database connection error. Please ensure the database is running and accessible.'
+            : 'Please try again later.'}
+        </div>
       </div>
     );
   }

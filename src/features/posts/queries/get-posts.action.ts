@@ -1,7 +1,7 @@
 "use server";
 
-import type { PostSearchParams } from "@/lib/post-filters";
-import { buildPostsQuery, type PostWithRelations } from "@/lib/post-filters";
+import type { PostSearchParams, PostWithRelations } from "@/lib/post-filters";
+import { buildPostsQuery } from "@/lib/post-filters";
 import { prisma } from "@/lib/prisma";
 
 export interface GetPostsResult {
@@ -16,23 +16,16 @@ export async function getPostsAction(
   params: PostSearchParams & { pageSize?: number } = {}
 ): Promise<GetPostsResult> {
   try {
-    const { page = 1, pageSize = 10, ...searchParams } = params;
-
-    // Build the query based on search parameters
-    const { where, orderBy } = buildPostsQuery(searchParams);
-
-    // Calculate pagination
-    const skip = (page - 1) * pageSize;
-
-    // Get total count for pagination
-    const totalCount = await prisma.post.count({ where });
-
-    // Fetch posts with relations
+    console.log("Starting getPostsAction with params:", params);
+    
+    // Test database connection first
+    await prisma.$connect();
+    console.log("Database connected successfully");
+    
+    // Start with a very simple query first
     const posts = await prisma.post.findMany({
-      where,
-      orderBy,
-      skip,
-      take: pageSize,
+      orderBy: { createdAt: 'desc' },
+      take: 10,
       include: {
         user: {
           select: {
@@ -68,21 +61,23 @@ export async function getPostsAction(
       },
     });
 
-    // Calculate pagination info
-    const totalPages = Math.ceil(totalCount / pageSize);
-    const hasNextPage = page < totalPages;
-    const hasPreviousPage = page > 1;
+    console.log("Posts fetched successfully:", posts.length);
 
     return {
       posts: posts as PostWithRelations[],
-      totalCount,
-      totalPages,
-      hasNextPage,
-      hasPreviousPage,
+      totalCount: posts.length,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPreviousPage: false,
     };
   } catch (error) {
-    console.error("Error fetching posts:", error);
-    throw new Error("Failed to fetch posts");
+    console.error("Error fetching posts details:", error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error("Error message:", errorMessage);
+    if (error instanceof Error && error.stack) {
+      console.error("Error stack:", error.stack);
+    }
+    throw new Error(`Failed to fetch posts: ${errorMessage}`);
   }
 }
 

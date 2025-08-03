@@ -32,10 +32,10 @@ export async function createPostAction(input: CreatePostInput) {
         userId: session.user.id,
       },
     });
-
-    redirect("/");
   } catch (error) {
     console.error("Failed to create post:", error);
     throw new Error("Failed to create post");
   }
+
+  redirect("/");
 }

@@ -231,7 +231,7 @@ export function CreatePostForm() {
                   name="authorName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nom d'affichage (optionnel)</FormLabel>
+                      <FormLabel>Nom d&apos;affichage (optionnel)</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Anonyme"

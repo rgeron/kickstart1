@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CreatePostForm } from "@/features/posts/components/create-post";
 import { PostsListWithSearch } from "@/features/posts/components/posts-list-with-search";
 import { getPostsAction } from "@/features/posts/queries/get-posts.action";
 import { auth } from "@/lib/auth/auth";
@@ -141,18 +142,7 @@ export default async function Page() {
 
         {/* Zone de publication - toujours visible */}
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">
-            ✍️ Raconte ton histoire de Meudon
-          </h2>
-          {/* TODO: Remplacer par CreatePostFormFlexible une fois l'import résolu */}
-          <Card>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground">
-                Formulaire de création de post flexible en cours
-                d'implémentation...
-              </p>
-            </CardContent>
-          </Card>
+          <CreatePostForm />
         </div>
 
         <Card>

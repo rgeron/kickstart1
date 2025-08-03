@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -12,32 +11,85 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tag, X } from "lucide-react";
+import { useState } from "react";
 
 // Database enum values (matching Prisma schema)
-type PostType = "HISTOIRE" | "ANECDOTE" | "BON_PLAN" | "LIEU_INCONTOURNABLE" | "PERSONNALITE_LOCALE" | "SOUVENIR" | "EVENEMENT";
-type PostContext = "DROLE" | "AMOUR" | "NOSTALGIQUE" | "FAMILLE" | "INSOLITE" | "EMOUVANTE" | "SURPRENANTE" | "TOUCHANTE" | "CURIEUSE" | "RECENTE" | "RESTAURANT" | "SHOPPING" | "LOISIR" | "PRATIQUE" | "GRATUIT" | "INCONTOURNABLE" | "CACHE" | "HISTORIQUE" | "NATURE" | "CULTURE";
+type PostType =
+  | "HISTOIRE"
+  | "ANECDOTE"
+  | "BON_PLAN"
+  | "LIEU_INCONTOURNABLE"
+  | "PERSONNALITE_LOCALE"
+  | "SOUVENIR"
+  | "EVENEMENT";
+type PostContext =
+  | "DROLE"
+  | "AMOUR"
+  | "NOSTALGIQUE"
+  | "FAMILLE"
+  | "INSOLITE"
+  | "EMOUVANTE"
+  | "SURPRENANTE"
+  | "TOUCHANTE"
+  | "CURIEUSE"
+  | "RECENTE"
+  | "RESTAURANT"
+  | "SHOPPING"
+  | "LOISIR"
+  | "PRATIQUE"
+  | "GRATUIT"
+  | "INCONTOURNABLE"
+  | "CACHE"
+  | "HISTORIQUE"
+  | "NATURE"
+  | "CULTURE";
 
 // Configuration for display
 const POST_TYPE_CONFIG = {
   HISTOIRE: {
     emoji: "📖",
     label: "Histoire",
-    contexts: ["DROLE", "AMOUR", "NOSTALGIQUE", "FAMILLE", "INSOLITE", "EMOUVANTE"] as PostContext[],
+    contexts: [
+      "DROLE",
+      "AMOUR",
+      "NOSTALGIQUE",
+      "FAMILLE",
+      "INSOLITE",
+      "EMOUVANTE",
+    ] as PostContext[],
   },
   ANECDOTE: {
     emoji: "😄",
     label: "Anecdote",
-    contexts: ["DROLE", "SURPRENANTE", "TOUCHANTE", "CURIEUSE", "RECENTE"] as PostContext[],
+    contexts: [
+      "DROLE",
+      "SURPRENANTE",
+      "TOUCHANTE",
+      "CURIEUSE",
+      "RECENTE",
+    ] as PostContext[],
   },
   BON_PLAN: {
     emoji: "💡",
     label: "Bon plan",
-    contexts: ["RESTAURANT", "SHOPPING", "LOISIR", "PRATIQUE", "GRATUIT"] as PostContext[],
+    contexts: [
+      "RESTAURANT",
+      "SHOPPING",
+      "LOISIR",
+      "PRATIQUE",
+      "GRATUIT",
+    ] as PostContext[],
   },
   LIEU_INCONTOURNABLE: {
     emoji: "🏛️",
     label: "Lieu incontournable",
-    contexts: ["INCONTOURNABLE", "CACHE", "HISTORIQUE", "NATURE", "CULTURE"] as PostContext[],
+    contexts: [
+      "INCONTOURNABLE",
+      "CACHE",
+      "HISTORIQUE",
+      "NATURE",
+      "CULTURE",
+    ] as PostContext[],
   },
   PERSONNALITE_LOCALE: {
     emoji: "👤",
@@ -96,7 +148,9 @@ export function TagSelector({
   disabled = false,
   className,
 }: TagSelectorProps) {
-  const availableContexts = selectedType ? POST_TYPE_CONFIG[selectedType].contexts : [];
+  const availableContexts = selectedType
+    ? POST_TYPE_CONFIG[selectedType].contexts
+    : [];
 
   const handleTypeSelect = (type: PostType) => {
     onTypeChange(type);
@@ -212,7 +266,9 @@ export function CompactTagSelector({
   onContextChange,
   disabled = false,
 }: CompactTagSelectorProps) {
-  const availableContexts = selectedType ? POST_TYPE_CONFIG[selectedType].contexts : [];
+  const availableContexts = selectedType
+    ? POST_TYPE_CONFIG[selectedType].contexts
+    : [];
 
   return (
     <div className="space-y-3">
@@ -243,15 +299,19 @@ export function CompactTagSelector({
       {/* Context Selection */}
       {selectedType && availableContexts.length > 0 && (
         <Select
-          value={selectedContext || ""}
-          onValueChange={(value) => onContextChange((value as PostContext) || undefined)}
+          value={selectedContext || "none"}
+          onValueChange={(value) =>
+            onContextChange(
+              value === "none" ? undefined : (value as PostContext)
+            )
+          }
           disabled={disabled}
         >
           <SelectTrigger>
             <SelectValue placeholder="Contexte (optionnel)..." />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Aucun contexte</SelectItem>
+            <SelectItem value="none">Aucun contexte</SelectItem>
             {availableContexts.map((context) => (
               <SelectItem key={context} value={context}>
                 {CONTEXT_LABELS[context]}
@@ -266,7 +326,8 @@ export function CompactTagSelector({
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>Aperçu:</span>
           <Badge variant="secondary" className="text-xs">
-            {POST_TYPE_CONFIG[selectedType].emoji} {POST_TYPE_CONFIG[selectedType].label}
+            {POST_TYPE_CONFIG[selectedType].emoji}{" "}
+            {POST_TYPE_CONFIG[selectedType].label}
           </Badge>
           {selectedContext && (
             <Badge variant="outline" className="text-xs">
@@ -280,9 +341,16 @@ export function CompactTagSelector({
 }
 
 // Hook for managing tag state
-export function useTagSelector(initialType?: PostType, initialContext?: PostContext) {
-  const [selectedType, setSelectedType] = useState<PostType | undefined>(initialType);
-  const [selectedContext, setSelectedContext] = useState<PostContext | undefined>(initialContext);
+export function useTagSelector(
+  initialType?: PostType,
+  initialContext?: PostContext
+) {
+  const [selectedType, setSelectedType] = useState<PostType | undefined>(
+    initialType
+  );
+  const [selectedContext, setSelectedContext] = useState<
+    PostContext | undefined
+  >(initialContext);
 
   const handleTypeChange = (type: PostType) => {
     setSelectedType(type);

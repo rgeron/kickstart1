@@ -13,20 +13,100 @@ enum UserRole {
   ADMIN
 }
 
+enum PostType {
+  HISTOIRE
+  ANECDOTE
+  BON_PLAN
+  LIEU_INCONTOURNABLE
+  PERSONNALITE_LOCALE
+  SOUVENIR
+  EVENEMENT
+}
+
+enum PostContext {
+  // Histoire contexts
+  DROLE
+  AMOUR
+  NOSTALGIQUE
+  FAMILLE
+  INSOLITE
+  EMOUVANTE
+
+  // Anecdote contexts
+  SURPRENANTE
+  TOUCHANTE
+  CURIEUSE
+  RECENTE
+
+  // Bon plan contexts
+  RESTAURANT
+  SHOPPING
+  LOISIR
+  PRATIQUE
+  GRATUIT
+
+  // Lieu contexts
+  INCONTOURNABLE
+  CACHE
+  HISTORIQUE
+  NATURE
+  CULTURE
+}
+
+enum MeudonnaisZone {
+  MEUDON_CENTRE
+  MEUDON_SUR_SEINE
+  MEUDON_LA_FORET
+  BELLEVUE
+  VAL_FLEURY
+  FORET_DOMANIALE
+}
+
+enum BadgeType {
+  NOUVEAU_MEUDONNAIS
+  HABITANT_CONFIRME
+  PILIER_COMMUNAUTE
+  LEGENDE_MEUDON
+  AMI_FORET
+  GARDIEN_PATRIMOINE
+  BON_VOISIN
+  CONTEUR
+  MEUDONNAIS_STAR
+}
+
 model Post {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   title   String
-  content String
+  content String   @db.Text // Augmenté pour 1000 caractères
+  imageUrl String?  // URL de l'image S3 optionnelle
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Système de tags à deux niveaux
+  postType    PostType
+  postContext PostContext?
 
-  likes    PostLike[]
-  votes    PostVote[]
-  comments Comment[]
+  // Géolocalisation
+  zone        MeudonnaisZone?
+  latitude    Float?
+  longitude   Float?
+  locationName String? // Nom du lieu spécifique
+
+  // Auteur (peut être anonyme)
+  isAnonymous Boolean @default(false)
+  authorName  String? // Nom personnalisé pour les posts anonymes
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Relations
+  likes       PostLike[]
+  votes       PostVote[]
+  comments    Comment[]
+  mentions    PostMention[]
+
+  // Statistiques calculées
+  karmaScore  Int @default(0)
 
   @@map("posts")
 }
@@ -45,12 +125,19 @@ model User {
   banReason     String?
   banExpires    DateTime?
 
+  // Système de karma et badges
+  karma         Int       @default(0)
+  badges        UserBadge[]
+
   sessions Session[]
   accounts Account[]
   posts    Post[]
   postLikes PostLike[]
   postVotes PostVote[]
   comments Comment[]
+  commentVotes CommentVote[]
+  mentions PostMention[]
+  receivedMentions PostMention[] @relation("MentionedUser")
 
   @@map("users")
 }
@@ -112,11 +199,23 @@ model Comment {
 
   content String
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Support pour commentaires hiérarchiques (threading Reddit-style)
+  parentId String?
+  parent   Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  // Auteur (peut être anonyme)
+  isAnonymous Boolean @default(false)
+  authorName  String? // Nom personnalisé pour les commentaires anonymes
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // Système de votes pour commentaires
+  votes CommentVote[]
+  karmaScore Int @default(0)
 
   @@map("comments")
 }
@@ -155,4 +254,123 @@ model PostVote {
 
   @@unique([userId, postId])
   @@map("post_votes")
+}
+
+// Nouveau modèle pour les votes sur commentaires
+model CommentVote {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type VoteType
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
+  @@map("comment_votes")
+}
+
+// Système de mentions @
+model PostMention {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Le post qui contient la mention
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // L'utilisateur qui a fait la mention
+  mentionerId String?
+  mentioner   User?   @relation(fields: [mentionerId], references: [id], onDelete: SetNull)
+
+  // L'utilisateur mentionné (peut être null pour les lieux/commerces)
+  mentionedUserId String?
+  mentionedUser   User?   @relation("MentionedUser", fields: [mentionedUserId], references: [id], onDelete: SetNull)
+
+  // Type de mention
+  mentionType MentionType
+  mentionText String // Le texte de la mention (@MuseeRodin, @Pierre, etc.)
+
+  @@map("post_mentions")
+}
+
+enum MentionType {
+  USER          // @Pierre_Durand
+  LIEU          // @MuseeRodin, @ForetMeudon
+  COMMERCE      // @BoulangerieCentre
+}
+
+// Système de badges utilisateur
+model UserBadge {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  badgeType BadgeType
+  earnedAt  DateTime @default(now())
+
+  @@unique([userId, badgeType])
+  @@map("user_badges")
+}
+
+// Base de données des lieux de Meudon pour autocomplétion
+model MeudonLocation {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  name        String   @unique // @MuseeRodin, @ForetMeudon
+  displayName String   // "Musée Rodin", "Forêt de Meudon"
+  type        LocationType
+  zone        MeudonnaisZone?
+  latitude    Float?
+  longitude   Float?
+  description String?
+  isActive    Boolean  @default(true)
+
+  @@map("meudon_locations")
+}
+
+enum LocationType {
+  MONUMENT
+  PARC
+  COMMERCE
+  INSTITUTION
+  TRANSPORT
+  AUTRE
+}
+
+// Base de données des commerces pour autocomplétion
+model MeudonCommerce {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  name        String   @unique // @BoulangerieCentre
+  displayName String   // "Boulangerie du Centre"
+  type        CommerceType
+  zone        MeudonnaisZone?
+  address     String?
+  latitude    Float?
+  longitude   Float?
+  isActive    Boolean  @default(true)
+
+  @@map("meudon_commerces")
+}
+
+enum CommerceType {
+  BOULANGERIE
+  PHARMACIE
+  RESTAURANT
+  CAFE
+  LIBRAIRIE
+  FLEURISTE
+  SUPERMARCHE
+  AUTRE
 }

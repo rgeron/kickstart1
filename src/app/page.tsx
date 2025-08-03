@@ -1,13 +1,12 @@
-import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { auth } from "@/lib/auth/auth";
-import { canUserCreatePost, canUserInteract } from "@/lib/permissions";
-import { headers } from "next/headers";
-import Link from "next/link";
-import { CreatePostForm } from "@/features/posts/components/create-post-form";
 import { PostsListWithSearch } from "@/features/posts/components/posts-list-with-search";
 import { getPostsAction } from "@/features/posts/queries/get-posts.action";
+import { auth } from "@/lib/auth/auth";
+import { canUserInteract } from "@/lib/permissions";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { Suspense } from "react";
 
 async function PostsList() {
   try {
@@ -24,14 +23,16 @@ async function PostsList() {
     return <PostsListWithSearch posts={posts} pageSize={10} />;
   } catch (error) {
     console.error("Failed to load posts:", error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return (
       <div className="text-center py-8">
         <div className="text-destructive mb-2">Failed to load posts</div>
         <div className="text-sm text-muted-foreground">
-          {errorMessage.includes('database') || errorMessage.includes('connection') 
-            ? 'Database connection error. Please ensure the database is running and accessible.'
-            : 'Please try again later.'}
+          {errorMessage.includes("database") ||
+          errorMessage.includes("connection")
+            ? "Database connection error. Please ensure the database is running and accessible."
+            : "Please try again later."}
         </div>
       </div>
     );
@@ -62,7 +63,7 @@ function PostsLoading() {
 
 export default async function Page() {
   const headersList = await headers();
-  
+
   const session = await auth.api.getSession({
     headers: headersList,
   });
@@ -73,7 +74,9 @@ export default async function Page() {
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold tracking-tight">ILoveMeudon Forum</h1>
+          <h1 className="text-4xl font-bold tracking-tight">
+            ILoveMeudon Forum
+          </h1>
           <div className="flex items-center gap-2">
             {session ? (
               <>
@@ -99,43 +102,58 @@ export default async function Page() {
           </div>
         </div>
 
+        {/* Header pour utilisateurs connectés */}
         {session && (
           <div className="flex items-center justify-between bg-muted/50 p-4 rounded-lg">
             <div>
-              <p className="font-medium">Welcome back, {session.user.name}!</p>
+              <p className="font-medium">Bienvenue, {session.user.name}!</p>
               <p className="text-sm text-muted-foreground">
-                {canUserCreatePost(userRole) 
-                  ? "You can create posts, comment, like, and vote" 
-                  : "Browse posts and join the discussion by signing up"}
+                Vous pouvez créer des posts, commenter, liker et voter
               </p>
             </div>
           </div>
         )}
 
-        {session && canUserCreatePost(userRole) && (
-          <CreatePostForm />
-        )}
-
+        {/* Header pour utilisateurs anonymes */}
         {!session && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Join the Community</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">
-                Sign up to create posts, comment, like, and vote on content in the ILoveMeudon forum.
-              </p>
+          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-blue-900 dark:text-blue-100">
+                  🌳 Bienvenue sur I Love Meudon !
+                </p>
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  Vous pouvez naviguer et publier anonymement, ou créer un
+                  compte pour plus de fonctionnalités
+                </p>
+              </div>
               <div className="flex gap-2">
-                <Button asChild>
-                  <Link href="/auth/register">Get Started</Link>
+                <Button size="sm" asChild variant="outline">
+                  <Link href="/auth/login">Se connecter</Link>
                 </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/auth/login">Already have an account?</Link>
+                <Button size="sm" asChild>
+                  <Link href="/auth/register">Créer un compte</Link>
                 </Button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Zone de publication - toujours visible */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">
+            ✍️ Raconte ton histoire de Meudon
+          </h2>
+          {/* TODO: Remplacer par CreatePostFormFlexible une fois l'import résolu */}
+          <Card>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground">
+                Formulaire de création de post flexible en cours
+                d'implémentation...
+              </p>
             </CardContent>
           </Card>
-        )}
+        </div>
 
         <Card>
           <CardHeader>
@@ -155,25 +173,49 @@ export default async function Page() {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className={canUserInteract(userRole) ? "text-green-600" : "text-muted-foreground"}>
+                <span
+                  className={
+                    canUserInteract(userRole)
+                      ? "text-green-600"
+                      : "text-muted-foreground"
+                  }
+                >
                   {canUserInteract(userRole) ? "✓" : "○"}
                 </span>
                 <span className="text-sm">Create and manage posts</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className={canUserInteract(userRole) ? "text-green-600" : "text-muted-foreground"}>
+                <span
+                  className={
+                    canUserInteract(userRole)
+                      ? "text-green-600"
+                      : "text-muted-foreground"
+                  }
+                >
                   {canUserInteract(userRole) ? "✓" : "○"}
                 </span>
                 <span className="text-sm">Comment on posts</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className={canUserInteract(userRole) ? "text-green-600" : "text-muted-foreground"}>
+                <span
+                  className={
+                    canUserInteract(userRole)
+                      ? "text-green-600"
+                      : "text-muted-foreground"
+                  }
+                >
                   {canUserInteract(userRole) ? "✓" : "○"}
                 </span>
                 <span className="text-sm">Like and vote on content</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className={session?.user?.role === "ADMIN" ? "text-green-600" : "text-muted-foreground"}>
+                <span
+                  className={
+                    session?.user?.role === "ADMIN"
+                      ? "text-green-600"
+                      : "text-muted-foreground"
+                  }
+                >
                   {session?.user?.role === "ADMIN" ? "✓" : "○"}
                 </span>
                 <span className="text-sm">Moderate all content (Admin)</span>
@@ -187,16 +229,24 @@ export default async function Page() {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Total Posts</span>
+                <span className="text-sm text-muted-foreground">
+                  Total Posts
+                </span>
                 <span className="text-sm font-medium">0</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Total Comments</span>
+                <span className="text-sm text-muted-foreground">
+                  Total Comments
+                </span>
                 <span className="text-sm font-medium">0</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Active Users</span>
-                <span className="text-sm font-medium">{session ? "1+" : "0"}</span>
+                <span className="text-sm text-muted-foreground">
+                  Active Users
+                </span>
+                <span className="text-sm font-medium">
+                  {session ? "1+" : "0"}
+                </span>
               </div>
             </CardContent>
           </Card>

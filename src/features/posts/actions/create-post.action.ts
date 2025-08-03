@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth/auth";
 import { canUserCreatePost } from "@/lib/permissions";
-import { prisma } from "@/generated/prisma";
+import { prisma } from "@/lib/prisma";
 import { createPostSchema, type CreatePostInput } from "../schemas";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";

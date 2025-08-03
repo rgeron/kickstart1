@@ -24,6 +24,10 @@ model Post {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  likes    PostLike[]
+  votes    PostVote[]
+  comments Comment[]
+
   @@map("posts")
 }
 
@@ -44,6 +48,9 @@ model User {
   sessions Session[]
   accounts Account[]
   posts    Post[]
+  postLikes PostLike[]
+  postVotes PostVote[]
+  comments Comment[]
 
   @@map("users")
 }
@@ -96,4 +103,56 @@ model Verification {
   expiresAt  DateTime
 
   @@map("verifications")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model PostLike {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("post_likes")
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+model PostVote {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type VoteType
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("post_votes")
 }

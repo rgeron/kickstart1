@@ -1,31 +1,27 @@
-import { getSessionCookie } from "better-auth/cookies";
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/protected", "/admin/dashboard"];
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-export async function middleware(req: NextRequest) {
-  const { nextUrl } = req;
-  const sessionCookie = getSessionCookie(req);
-
-  const res = NextResponse.next();
-
-  const isLoggedIn = !!sessionCookie;
-  const isOnProtectedRoute = protectedRoutes.includes(nextUrl.pathname);
-  const isOnAuthRoute = nextUrl.pathname.startsWith("/auth");
-
-  if (isOnProtectedRoute && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+  // Skip middleware for auth API routes, static files, and other exclusions
+  if (
+    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon.ico") ||
+    pathname.startsWith("/sitemap.xml") ||
+    pathname.startsWith("/robots.txt") ||
+    pathname.includes(".")
+  ) {
+    return NextResponse.next();
   }
 
-  if (isOnAuthRoute && isLoggedIn) {
-    return NextResponse.redirect(new URL("/protected", req.url));
-  }
-
-  return res;
+  // For all other routes, continue without modification
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    // Match all paths except static files and API routes that need to be excluded
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };

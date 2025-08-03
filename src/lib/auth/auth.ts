@@ -81,7 +81,9 @@ const options = {
       }
 
       if (ctx.path === "/update-user") {
-        const name = ctx.body.name ? normalizeName(ctx.body.name) : ctx.body.name;
+        const name = ctx.body.name
+          ? normalizeName(ctx.body.name)
+          : ctx.body.name;
 
         return {
           context: { ...ctx, body: { ...ctx.body, name } },
@@ -133,10 +135,6 @@ const options = {
     google: {
       clientId: String(process.env.GOOGLE_CLIENT_ID),
       clientSecret: String(process.env.GOOGLE_CLIENT_SECRET),
-    },
-    github: {
-      clientId: String(process.env.GITHUB_CLIENT_ID),
-      clientSecret: String(process.env.GITHUB_CLIENT_SECRET),
     },
   },
   plugins: [

@@ -25,7 +25,7 @@ export async function createPostAction(input: CreatePostInput) {
   const validatedInput = createPostSchema.parse(input);
 
   try {
-    const post = await prisma.post.create({
+    await prisma.post.create({
       data: {
         title: validatedInput.title,
         content: validatedInput.content,

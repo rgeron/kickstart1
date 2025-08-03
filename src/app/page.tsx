@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth/auth";
@@ -5,6 +6,44 @@ import { canUserCreatePost, canUserInteract } from "@/lib/permissions";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { CreatePostForm } from "@/features/posts/components/create-post-form";
+import { PostsListWithSearch } from "@/features/posts/components/posts-list-with-search";
+import { getPostsAction } from "@/features/posts/queries/get-posts.action";
+
+async function PostsList() {
+  try {
+    const { posts } = await getPostsAction({ pageSize: 10 });
+    return <PostsListWithSearch posts={posts} pageSize={10} />;
+  } catch (error) {
+    console.error("Failed to load posts:", error);
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        Failed to load posts. Please try again later.
+      </div>
+    );
+  }
+}
+
+function PostsLoading() {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <Card key={i} className="w-full animate-pulse">
+          <CardHeader>
+            <div className="h-6 bg-muted rounded mb-2" />
+            <div className="h-4 bg-muted rounded w-1/3" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded" />
+              <div className="h-4 bg-muted rounded" />
+              <div className="h-4 bg-muted rounded w-2/3" />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
 
 export default async function Page() {
   const headersList = await headers();
@@ -85,14 +124,12 @@ export default async function Page() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent Posts</CardTitle>
+            <CardTitle>Community Posts</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="text-center text-muted-foreground py-8">
-                No posts yet. {canUserCreatePost(userRole) ? "Be the first to create one!" : "Sign up to start posting!"}
-              </div>
-            </div>
+            <Suspense fallback={<PostsLoading />}>
+              <PostsList />
+            </Suspense>
           </CardContent>
         </Card>
 

@@ -1,15 +1,16 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { usePostSearch } from "@/hooks/use-post-search";
 import {
   paginatePosts,
   processPostsWithFilters,
   type PostWithRelations,
 } from "@/lib/post-filters";
-import { Heart, MessageCircle, ThumbsDown, ThumbsUp, User } from "lucide-react";
 import { useMemo } from "react";
+import { toast } from "sonner";
+import { commentPostAction } from "../actions/comment-post.action";
+import { likePostAction } from "../actions/like-post.action";
+import { EnhancedPostCard } from "./enhanced-post-card";
 import { PostPagination } from "./post-pagination";
 import { PostSearchControls } from "./post-search-controls";
 
@@ -18,79 +19,40 @@ interface PostsListWithSearchProps {
   pageSize?: number;
 }
 
-// Simple post card component for demonstration
+// Enhanced post card wrapper with server actions
 function PostCard({ post }: { post: PostWithRelations }) {
-  const upVotes = post.votes.filter((vote) => vote.type === "UP").length;
-  const downVotes = post.votes.filter((vote) => vote.type === "DOWN").length;
-  const likesCount = post.likes.length;
-  const commentsCount = post.comments.length;
+  const handleLike = async (postId: string) => {
+    try {
+      const result = await likePostAction(postId);
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.error);
+      }
+    } catch {
+      toast.error("Erreur lors du like");
+    }
+  };
 
-  // Handle anonymous posts
-  const authorName = post.isAnonymous
-    ? post.authorName || "Anonyme"
-    : post.user?.name || "Utilisateur";
+  const handleComment = async (postId: string, content: string) => {
+    try {
+      const result = await commentPostAction({ postId, content });
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.error);
+      }
+    } catch {
+      toast.error("Erreur lors du commentaire");
+    }
+  };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <User className="h-4 w-4" />
-            {authorName}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground line-clamp-3 mb-4">
-          {post.content}
-        </p>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <ThumbsUp className="h-4 w-4" />
-              {upVotes}
-            </div>
-            <div className="flex items-center gap-1">
-              <ThumbsDown className="h-4 w-4" />
-              {downVotes}
-            </div>
-            <div className="flex items-center gap-1">
-              <Heart className="h-4 w-4" />
-              {likesCount}
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageCircle className="h-4 w-4" />
-              {commentsCount}
-            </div>
-          </div>
-
-          <Badge variant="secondary">
-            {new Date(post.createdAt).toLocaleDateString()}
-          </Badge>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Loading skeleton component
-function PostSkeleton() {
-  return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="h-6 bg-muted rounded animate-pulse" />
-        <div className="h-4 bg-muted rounded w-1/3 animate-pulse" />
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          <div className="h-4 bg-muted rounded animate-pulse" />
-          <div className="h-4 bg-muted rounded animate-pulse" />
-          <div className="h-4 bg-muted rounded w-2/3 animate-pulse" />
-        </div>
-      </CardContent>
-    </Card>
+    <EnhancedPostCard
+      post={post}
+      onLike={handleLike}
+      onComment={handleComment}
+    />
   );
 }
 

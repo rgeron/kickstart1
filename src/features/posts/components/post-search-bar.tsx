@@ -16,7 +16,7 @@ export function PostSearchBar() {
     setIsSearching(true);
     updateSearch(value);
     // Reset loading state after a short delay
-    setTimeout(() => setIsSearching(false), 150);
+    setTimeout(() => setIsSearching(false), 1500);
   }, 300);
 
   const handleSearchChange = useCallback(

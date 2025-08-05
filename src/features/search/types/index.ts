@@ -1,5 +1,5 @@
-export type SortType = 'hot' | 'top' | 'new' | 'controversial';
-export type TimeRange = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
+export type SortType = "hot" | "top" | "new" | "controversial";
+export type TimeRange = "hour" | "day" | "week" | "month" | "year" | "all";
 
 export interface SearchFilters {
   query?: string;
@@ -38,7 +38,7 @@ export interface PostSearchResult {
 }
 
 export interface SearchSuggestion {
-  type: 'TAG' | 'ZONE' | 'USER' | 'MENTION';
+  type: "TAG" | "ZONE" | "USER" | "MENTION";
   value: string;
   label: string;
   count?: number;
@@ -58,5 +58,5 @@ export interface TrendingSearch {
   query: string;
   count: number;
   growth: number; // pourcentage de croissance
-  timeframe: '1h' | '24h' | '7d';
+  timeframe: "1h" | "24h" | "7d";
 }

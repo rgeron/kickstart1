@@ -1,17 +1,33 @@
-import { useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export const useDebounceFn = <T extends unknown[]>(
   callback: (...args: T) => void,
   time = 300
 ) => {
-  const debounce = useRef<number>(0);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const onDebounce = (...args: T) => {
-    clearTimeout(debounce.current);
-    debounce.current = setTimeout(() => {
-      callback(...args);
-    }, time) as unknown as number;
-  };
+  // Use useCallback to memoize the debounced function
+  const debouncedCallback = useCallback(
+    (...args: T) => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
 
-  return onDebounce;
+      debounceRef.current = setTimeout(() => {
+        callback(...args);
+      }, time);
+    },
+    [callback, time]
+  );
+
+  // Cleanup on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+  return debouncedCallback;
 };

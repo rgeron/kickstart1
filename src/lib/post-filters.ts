@@ -46,20 +46,26 @@ export function filterPosts(
   // Search query filter
   if (params.q) {
     const query = params.q.toLowerCase().trim();
-    filteredPosts = filteredPosts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(query) ||
-        post.content.toLowerCase().includes(query) ||
-        post.user.name.toLowerCase().includes(query)
-    );
+    filteredPosts = filteredPosts.filter((post) => {
+      const titleMatch = post.title.toLowerCase().includes(query);
+      const contentMatch = post.content.toLowerCase().includes(query);
+
+      // Handle null user case - use authorName or fallback to empty string
+      const authorName = post.user?.name || post.authorName || "";
+      const authorMatch = authorName.toLowerCase().includes(query);
+
+      return titleMatch || contentMatch || authorMatch;
+    });
   }
 
   // Author filter
   if (params.author) {
     const authorQuery = params.author.toLowerCase().trim();
-    filteredPosts = filteredPosts.filter((post) =>
-      post.user.name.toLowerCase().includes(authorQuery)
-    );
+    filteredPosts = filteredPosts.filter((post) => {
+      // Handle null user case - use authorName or fallback to empty string
+      const authorName = post.user?.name || post.authorName || "";
+      return authorName.toLowerCase().includes(authorQuery);
+    });
   }
 
   // Vote filter

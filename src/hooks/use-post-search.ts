@@ -1,14 +1,24 @@
 "use client";
 
-import { parseAsString, parseAsStringEnum, parseAsInteger, useQueryStates } from "nuqs";
+import {
+  parseAsInteger,
+  parseAsString,
+  parseAsStringEnum,
+  useQueryStates,
+} from "nuqs";
 
 // Define sort options
 const SORT_OPTIONS = ["latest", "oldest", "most-liked", "most-voted"] as const;
-type SortOption = typeof SORT_OPTIONS[number];
+type SortOption = (typeof SORT_OPTIONS)[number];
 
 // Define filter options
-const VOTE_FILTER_OPTIONS = ["all", "positive", "negative", "no-votes"] as const;
-type VoteFilterOption = typeof VOTE_FILTER_OPTIONS[number];
+const VOTE_FILTER_OPTIONS = [
+  "all",
+  "positive",
+  "negative",
+  "no-votes",
+] as const;
+type VoteFilterOption = (typeof VOTE_FILTER_OPTIONS)[number];
 
 // Post search and filter state management
 export function usePostSearch() {
@@ -16,31 +26,36 @@ export function usePostSearch() {
     {
       // Search query
       q: parseAsString.withDefault(""),
-      
+
       // Sorting
-      sort: parseAsStringEnum<SortOption>([...SORT_OPTIONS]).withDefault("latest"),
-      
+      sort: parseAsStringEnum<SortOption>([...SORT_OPTIONS]).withDefault(
+        "latest"
+      ),
+
       // Pagination
       page: parseAsInteger.withDefault(1),
-      
+
       // Filters
       author: parseAsString.withDefault(""),
-      votes: parseAsStringEnum<VoteFilterOption>([...VOTE_FILTER_OPTIONS]).withDefault("all"),
-      
+      votes: parseAsStringEnum<VoteFilterOption>([
+        ...VOTE_FILTER_OPTIONS,
+      ]).withDefault("all"),
+
       // Date range (optional)
       dateFrom: parseAsString.withDefault(""),
       dateTo: parseAsString.withDefault(""),
     },
     {
       // Options for all query states
-      shallow: false, // Update URL completely for better sharing
+      shallow: false, // Keep deep updates for better sharing
       clearOnDefault: true, // Remove params when they match default values
+      throttleMs: 100, // Throttle URL updates to improve performance
     }
   );
 
   // Helper functions for common operations
   const updateSearch = (query: string) => {
-    setSearchState({ q: query, page: 1 }); // Reset to page 1 when searching
+    setSearchState({ q: query, page: 1 }, { shallow: true }); // Use shallow updates for search input
   };
 
   const updateSort = (sort: SortOption) => {
@@ -86,7 +101,7 @@ export function usePostSearch() {
   // Build search parameters for API calls
   const getSearchParams = () => {
     const params = new URLSearchParams();
-    
+
     if (searchState.q) params.set("q", searchState.q);
     if (searchState.sort !== "latest") params.set("sort", searchState.sort);
     if (searchState.page > 1) params.set("page", searchState.page.toString());
@@ -94,25 +109,25 @@ export function usePostSearch() {
     if (searchState.votes !== "all") params.set("votes", searchState.votes);
     if (searchState.dateFrom) params.set("dateFrom", searchState.dateFrom);
     if (searchState.dateTo) params.set("dateTo", searchState.dateTo);
-    
+
     return params;
   };
 
   return {
     // Current state
     ...searchState,
-    
+
     // Update functions
     updateSearch,
     updateSort,
     updateFilters,
     updatePage,
     clearFilters,
-    
+
     // Utility functions
     hasActiveFilters,
     getSearchParams,
-    
+
     // Constants for UI
     SORT_OPTIONS,
     VOTE_FILTER_OPTIONS,

@@ -4,22 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "@/lib/auth/auth-client";
-import { canUserInteract, canUserLike, canUserVote } from "@/lib/permissions";
-import { PostWithRelations } from "@/lib/post-filters";
 import { VoteButtons } from "@/features/voting/components/vote-buttons";
 import { useVoting } from "@/features/voting/hooks/use-voting";
 import { VoteStats } from "@/features/voting/types";
-import { formatDistanceToNow } from "date-fns";
+import { useSession } from "@/lib/auth/auth-client";
+import { canUserInteract, canUserLike, canUserVote } from "@/lib/permissions";
+import { PostWithRelations } from "@/lib/post-filters";
+import { format, formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
-import { 
-  Heart, 
-  MessageCircle, 
-  User, 
-  Clock, 
-  Send,
-  Reply
-} from "lucide-react";
+import { Clock, Heart, MessageCircle, Send, User } from "lucide-react";
 import { useState } from "react";
 
 // Extended post type with full comment data
@@ -48,29 +41,33 @@ interface PostWithCommentsProps {
   post: PostWithFullComments;
   onLike?: (postId: string) => Promise<void>;
   onComment?: (postId: string, content: string) => Promise<void>;
-  onCommentVote?: (commentId: string, type: "UPVOTE" | "DOWNVOTE") => Promise<void>;
+  onCommentVote?: (
+    commentId: string,
+    type: "UPVOTE" | "DOWNVOTE"
+  ) => Promise<void>;
 }
 
-function CommentItem({ 
-  comment, 
-  onVote 
-}: { 
-  comment: PostWithFullComments['comments'][0];
+function CommentItem({
+  comment,
+  onVote,
+}: {
+  comment: PostWithFullComments["comments"][0];
   onVote?: (commentId: string, type: "UPVOTE" | "DOWNVOTE") => Promise<void>;
 }) {
   const { data: session } = useSession();
-  
+
   const upVotes = comment.votes.filter((vote) => vote.type === "UP").length;
   const downVotes = comment.votes.filter((vote) => vote.type === "DOWN").length;
-  const userVote = session?.user 
-    ? comment.votes.find((vote) => vote.userId === session.user.id)?.type 
+  const userVote = session?.user
+    ? comment.votes.find((vote) => vote.userId === session.user.id)?.type
     : null;
 
   const voteStats: VoteStats = {
     upvotes: upVotes,
     downvotes: downVotes,
     score: upVotes - downVotes,
-    userVote: userVote === "UP" ? "UPVOTE" : userVote === "DOWN" ? "DOWNVOTE" : null,
+    userVote:
+      userVote === "UP" ? "UPVOTE" : userVote === "DOWN" ? "DOWNVOTE" : null,
   };
 
   const voting = useVoting({
@@ -111,15 +108,17 @@ function CommentItem({
   );
 }
 
-export function PostWithComments({ 
-  post, 
-  onLike, 
-  onComment, 
-  onCommentVote 
+export function PostWithComments({
+  post,
+  onLike,
+  onComment,
+  onCommentVote,
 }: PostWithCommentsProps) {
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState(
-    session?.user ? post.likes.some((like) => like.userId === session.user.id) : false
+    session?.user
+      ? post.likes.some((like) => like.userId === session.user.id)
+      : false
   );
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [commentContent, setCommentContent] = useState("");
@@ -129,15 +128,16 @@ export function PostWithComments({
   // Calculate vote stats for the voting component
   const upVotes = post.votes.filter((vote) => vote.type === "UP").length;
   const downVotes = post.votes.filter((vote) => vote.type === "DOWN").length;
-  const userVote = session?.user 
-    ? post.votes.find((vote) => vote.userId === session.user.id)?.type 
+  const userVote = session?.user
+    ? post.votes.find((vote) => vote.userId === session.user.id)?.type
     : null;
 
   const voteStats: VoteStats = {
     upvotes: upVotes,
     downvotes: downVotes,
     score: upVotes - downVotes,
-    userVote: userVote === "UP" ? "UPVOTE" : userVote === "DOWN" ? "DOWNVOTE" : null,
+    userVote:
+      userVote === "UP" ? "UPVOTE" : userVote === "DOWN" ? "DOWNVOTE" : null,
   };
 
   const voting = useVoting({
@@ -206,12 +206,14 @@ export function PostWithComments({
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent>
         <div className="space-y-6">
           {/* Post Content */}
           <div className="prose prose-sm max-w-none">
-            <p className="leading-relaxed whitespace-pre-wrap">{post.content}</p>
+            <p className="leading-relaxed whitespace-pre-wrap">
+              {post.content}
+            </p>
           </div>
 
           {/* Interaction Bar */}
@@ -235,7 +237,9 @@ export function PostWithComments({
                 onClick={handleLike}
                 disabled={!canLikePost || isSubmittingLike}
               >
-                <Heart className={`h-4 w-4 mr-1 ${isLiked ? "fill-current" : ""}`} />
+                <Heart
+                  className={`h-4 w-4 mr-1 ${isLiked ? "fill-current" : ""}`}
+                />
                 {post.likes.length}
               </Button>
 
@@ -251,7 +255,7 @@ export function PostWithComments({
             </div>
 
             <Badge variant="secondary">
-              {new Date(post.createdAt).toLocaleDateString()}
+              {format(new Date(post.createdAt), "dd/MM/yyyy", { locale: fr })}
             </Badge>
           </div>
 
@@ -297,9 +301,9 @@ export function PostWithComments({
               </h3>
               <div className="space-y-3">
                 {post.comments.map((comment) => (
-                  <CommentItem 
-                    key={comment.id} 
-                    comment={comment} 
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
                     onVote={onCommentVote}
                   />
                 ))}

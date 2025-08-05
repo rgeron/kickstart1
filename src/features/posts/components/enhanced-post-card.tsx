@@ -4,24 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "@/lib/auth/auth-client";
-import { canUserInteract, canUserLike, canUserVote } from "@/lib/permissions";
-import { PostWithRelations } from "@/lib/post-filters";
 import { VoteButtons } from "@/features/voting/components/vote-buttons";
 import { useVoting } from "@/features/voting/hooks/use-voting";
 import { VoteStats } from "@/features/voting/types";
-import { formatDistanceToNow } from "date-fns";
+import { useSession } from "@/lib/auth/auth-client";
+import { canUserInteract, canUserLike, canUserVote } from "@/lib/permissions";
+import { PostWithRelations } from "@/lib/post-filters";
+import { format, formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
-import { 
-  Heart, 
-  MessageCircle, 
-  User, 
-  MapPin, 
-  Clock, 
-  Send,
-  ChevronDown,
-  ChevronUp
-} from "lucide-react";
+import { Clock, Heart, MessageCircle, Send, User } from "lucide-react";
 import { useState } from "react";
 
 interface EnhancedPostCardProps {
@@ -30,10 +21,16 @@ interface EnhancedPostCardProps {
   onComment?: (postId: string, content: string) => Promise<void>;
 }
 
-export function EnhancedPostCard({ post, onLike, onComment }: EnhancedPostCardProps) {
+export function EnhancedPostCard({
+  post,
+  onLike,
+  onComment,
+}: EnhancedPostCardProps) {
   const { data: session } = useSession();
   const [isLiked, setIsLiked] = useState(
-    session?.user ? post.likes.some((like) => like.userId === session.user.id) : false
+    session?.user
+      ? post.likes.some((like) => like.userId === session.user.id)
+      : false
   );
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [commentContent, setCommentContent] = useState("");
@@ -43,15 +40,16 @@ export function EnhancedPostCard({ post, onLike, onComment }: EnhancedPostCardPr
   // Calculate vote stats for the voting component
   const upVotes = post.votes.filter((vote) => vote.type === "UP").length;
   const downVotes = post.votes.filter((vote) => vote.type === "DOWN").length;
-  const userVote = session?.user 
-    ? post.votes.find((vote) => vote.userId === session.user.id)?.type 
+  const userVote = session?.user
+    ? post.votes.find((vote) => vote.userId === session.user.id)?.type
     : null;
 
   const voteStats: VoteStats = {
     upvotes: upVotes,
     downvotes: downVotes,
     score: upVotes - downVotes,
-    userVote: userVote === "UP" ? "UPVOTE" : userVote === "DOWN" ? "DOWNVOTE" : null,
+    userVote:
+      userVote === "UP" ? "UPVOTE" : userVote === "DOWN" ? "DOWNVOTE" : null,
   };
 
   const voting = useVoting({
@@ -119,7 +117,7 @@ export function EnhancedPostCard({ post, onLike, onComment }: EnhancedPostCardPr
           {timeAgo}
         </div>
       </CardHeader>
-      
+
       <CardContent>
         <div className="space-y-4">
           {/* Post Content */}
@@ -166,7 +164,7 @@ export function EnhancedPostCard({ post, onLike, onComment }: EnhancedPostCardPr
             </div>
 
             <Badge variant="secondary" className="text-xs">
-              {new Date(post.createdAt).toLocaleDateString()}
+              {format(new Date(post.createdAt), "dd/MM/yyyy", { locale: fr })}
             </Badge>
           </div>
 

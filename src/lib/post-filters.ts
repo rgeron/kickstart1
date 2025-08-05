@@ -7,13 +7,15 @@ export interface PostWithRelations {
   updatedAt: Date;
   title: string;
   content: string;
-  userId: string;
+  userId: string | null;
+  isAnonymous: boolean;
+  authorName?: string | null;
   user: {
     id: string;
     name: string;
     email: string;
     image?: string;
-  };
+  } | null;
   likes: Array<{ userId: string }>;
   votes: Array<{ type: "UP" | "DOWN"; userId: string }>;
   comments: Array<{ id: string }>;
@@ -64,7 +66,9 @@ export function filterPosts(
   if (params.votes && params.votes !== "all") {
     filteredPosts = filteredPosts.filter((post) => {
       const upVotes = post.votes.filter((vote) => vote.type === "UP").length;
-      const downVotes = post.votes.filter((vote) => vote.type === "DOWN").length;
+      const downVotes = post.votes.filter(
+        (vote) => vote.type === "DOWN"
+      ).length;
       const totalVotes = post.votes.length;
 
       switch (params.votes) {
@@ -109,12 +113,14 @@ export function sortPosts(
   switch (sortOption) {
     case "latest":
       return sortedPosts.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
     case "oldest":
       return sortedPosts.sort(
-        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
 
     case "most-liked":
@@ -143,10 +149,10 @@ export function processPostsWithFilters(
 ): PostWithRelations[] {
   // First filter
   const filteredPosts = filterPosts(posts, params);
-  
+
   // Then sort
   const sortedPosts = sortPosts(filteredPosts, params.sort || "latest");
-  
+
   return sortedPosts;
 }
 

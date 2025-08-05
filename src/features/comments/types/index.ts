@@ -8,22 +8,21 @@ export interface Comment {
   depth: number; // profondeur dans l'arbre (0 = racine)
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Relations
   author?: {
     id: string;
     name: string;
-    karma?: number;
   } | null;
   children?: Comment[];
   parent?: Comment | null;
-  
+
   // Stats de vote
   upvotes: number;
   downvotes: number;
   score: number;
-  userVote?: 'UPVOTE' | 'DOWNVOTE' | null;
-  
+  userVote?: "UPVOTE" | "DOWNVOTE" | null;
+
   // État UI
   isCollapsed?: boolean;
   isHighlighted?: boolean;
@@ -35,7 +34,7 @@ export interface CommentTree {
   totalReplies: number;
 }
 
-export type CommentSortType = 'best' | 'top' | 'new' | 'controversial' | 'old';
+export type CommentSortType = "best" | "top" | "new" | "controversial" | "old";
 
 export interface CommentFilters {
   sortBy: CommentSortType;

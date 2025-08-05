@@ -10,7 +10,6 @@ import { fr } from "date-fns/locale";
 import {
   ArrowDown,
   ArrowUp,
-  Award,
   Clock,
   Heart,
   MapPin,
@@ -36,7 +35,6 @@ interface PostWithDetails {
   locationName?: string;
   isAnonymous: boolean;
   authorName?: string;
-  karmaScore: number;
   imageUrl?: string;
 
   // Relations
@@ -45,7 +43,6 @@ interface PostWithDetails {
     name: string;
     email: string;
     image?: string;
-    karma?: number;
     badges?: Array<{ badgeType: string; earnedAt: Date }>;
   };
 
@@ -304,14 +301,6 @@ export function PostCardDetailed({
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Score karma */}
-            {post.karmaScore > 0 && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Award className="h-3 w-3" />
-                <span>{post.karmaScore}</span>
-              </div>
-            )}
-
             {/* Partager */}
             <Button
               variant="ghost"

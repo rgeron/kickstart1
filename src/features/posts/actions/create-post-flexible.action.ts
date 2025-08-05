@@ -37,7 +37,6 @@ export async function createPostFlexibleAction(input: CreatePostFlexibleInput) {
       zone: validatedInput.zone,
       locationName: validatedInput.locationName,
       isAnonymous: validatedInput.isAnonymous,
-      karmaScore: 0, // Initialiser le karma à 0
     };
 
     // Gestion de l'auteur

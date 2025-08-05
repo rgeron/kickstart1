@@ -30,13 +30,9 @@ export async function getUserSuggestions(
         id: true,
         name: true,
         email: true,
-        karma: true,
       },
       take: limit,
-      orderBy: [
-        { karma: "desc" }, // Higher karma users first
-        { name: "asc" },
-      ],
+      orderBy: [{ name: "asc" }],
     });
 
     return users.map((user) => ({
@@ -44,7 +40,7 @@ export async function getUserSuggestions(
       type: "USER" as const,
       name: user.name.replace(/\s+/g, "_"), // Convert spaces to underscores for @mentions
       displayName: user.name,
-      description: `${user.karma} karma`,
+      description: user.email,
     }));
   } catch (error) {
     console.error("Error fetching user suggestions:", error);

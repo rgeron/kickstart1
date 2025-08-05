@@ -1,13 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
-import { usePostSearch } from "@/hooks/use-post-search";
-import { PostSearchControls } from "./post-search-controls";
-import { PostPagination } from "./post-pagination";
-import { processPostsWithFilters, paginatePosts, type PostWithRelations } from "@/lib/post-filters";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { usePostSearch } from "@/hooks/use-post-search";
+import {
+  paginatePosts,
+  processPostsWithFilters,
+  type PostWithRelations,
+} from "@/lib/post-filters";
 import { Heart, MessageCircle, ThumbsDown, ThumbsUp, User } from "lucide-react";
+import { useMemo } from "react";
+import { PostPagination } from "./post-pagination";
+import { PostSearchControls } from "./post-search-controls";
 
 interface PostsListWithSearchProps {
   posts: PostWithRelations[];
@@ -16,10 +20,15 @@ interface PostsListWithSearchProps {
 
 // Simple post card component for demonstration
 function PostCard({ post }: { post: PostWithRelations }) {
-  const upVotes = post.votes.filter(vote => vote.type === "UP").length;
-  const downVotes = post.votes.filter(vote => vote.type === "DOWN").length;
+  const upVotes = post.votes.filter((vote) => vote.type === "UP").length;
+  const downVotes = post.votes.filter((vote) => vote.type === "DOWN").length;
   const likesCount = post.likes.length;
   const commentsCount = post.comments.length;
+
+  // Handle anonymous posts
+  const authorName = post.isAnonymous
+    ? post.authorName || "Anonyme"
+    : post.user?.name || "Utilisateur";
 
   return (
     <Card className="w-full">
@@ -28,13 +37,15 @@ function PostCard({ post }: { post: PostWithRelations }) {
           <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <User className="h-4 w-4" />
-            {post.user.name}
+            {authorName}
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground line-clamp-3 mb-4">{post.content}</p>
-        
+        <p className="text-muted-foreground line-clamp-3 mb-4">
+          {post.content}
+        </p>
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
@@ -54,7 +65,7 @@ function PostCard({ post }: { post: PostWithRelations }) {
               {commentsCount}
             </div>
           </div>
-          
+
           <Badge variant="secondary">
             {new Date(post.createdAt).toLocaleDateString()}
           </Badge>
@@ -92,18 +103,17 @@ function EmptyState({ hasFilters }: { hasFilters: boolean }) {
         {hasFilters ? "No posts found" : "No posts yet"}
       </h3>
       <p className="text-muted-foreground">
-        {hasFilters 
+        {hasFilters
           ? "Try adjusting your search filters to find what you're looking for."
-          : "Be the first to create a post!"
-        }
+          : "Be the first to create a post!"}
       </p>
     </div>
   );
 }
 
-export function PostsListWithSearch({ 
-  posts, 
-  pageSize = 10 
+export function PostsListWithSearch({
+  posts,
+  pageSize = 10,
 }: PostsListWithSearchProps) {
   const searchState = usePostSearch();
 
@@ -111,10 +121,14 @@ export function PostsListWithSearch({
   const processedData = useMemo(() => {
     // Apply filters and sorting
     const filteredAndSorted = processPostsWithFilters(posts, searchState);
-    
+
     // Apply pagination
-    const paginatedResult = paginatePosts(filteredAndSorted, searchState.page, pageSize);
-    
+    const paginatedResult = paginatePosts(
+      filteredAndSorted,
+      searchState.page,
+      pageSize
+    );
+
     return {
       posts: paginatedResult.posts,
       totalPages: paginatedResult.totalPages,
@@ -134,11 +148,9 @@ export function PostsListWithSearch({
       {/* Results Summary */}
       {processedData.totalCount > 0 && (
         <div className="text-sm text-muted-foreground">
-          {processedData.totalCount === posts.length ? (
-            `Showing all ${processedData.totalCount} posts`
-          ) : (
-            `Found ${processedData.totalCount} of ${posts.length} posts`
-          )}
+          {processedData.totalCount === posts.length
+            ? `Showing all ${processedData.totalCount} posts`
+            : `Found ${processedData.totalCount} of ${posts.length} posts`}
         </div>
       )}
 

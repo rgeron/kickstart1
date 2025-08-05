@@ -56,7 +56,7 @@ const MOCK_SUGGESTIONS: MentionSuggestion[] = [
   // Commerces
   {
     id: "commerce-1",
-    type: "COMMERCE",
+    type: "BUSINESS",
     text: "@BoulangerieCentre",
     displayName: "Boulangerie du Centre",
     description: "Meudon-Centre • Boulangerie",

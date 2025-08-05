@@ -4,13 +4,13 @@
 
 // Configuration générale de l'application
 export const APP_CONFIG = {
-  name: 'ilovemeudon.fr',
-  description: 'Pour tous les amoureux de Meudon',
-  version: '1.0.0',
+  name: "ilovemeudon.fr",
+  description: "Pour tous les amoureux de Meudon",
+  version: "1.0.0",
   maxPostLength: 1000,
   maxCommentLength: 500,
   maxImageSize: 5 * 1024 * 1024, // 5MB
-  supportedImageTypes: ['image/jpeg', 'image/png', 'image/webp'],
+  supportedImageTypes: ["image/jpeg", "image/png", "image/webp"],
 } as const;
 
 // Configuration des posts
@@ -18,7 +18,7 @@ export const POSTS_CONFIG = {
   maxLength: 1000,
   maxImagesPerPost: 1,
   allowAnonymous: true,
-  defaultAuthorName: 'Anonyme',
+  defaultAuthorName: "Anonyme",
   pagination: {
     defaultLimit: 20,
     maxLimit: 100,
@@ -27,21 +27,10 @@ export const POSTS_CONFIG = {
 
 // Configuration du système de votes
 export const VOTING_CONFIG = {
-  karmaAlgorithm: {
-    // Algorithme logarithmique : log10(votes) * multiplier
-    multiplier: 10,
-    minVotesForKarma: 1,
-  },
   hotScoreAlgorithm: {
     // score / (age_in_hours + offset)^gravity
     gravity: 1.8,
     timeOffset: 2, // heures
-  },
-  badges: {
-    'nouveau-meudonnais': { min: 0, max: 50 },
-    'habitant-confirme': { min: 51, max: 200 },
-    'pilier-communaute': { min: 201, max: 500 },
-    'legende-meudon': { min: 501, max: Infinity },
   },
 } as const;
 
@@ -49,7 +38,7 @@ export const VOTING_CONFIG = {
 export const COMMENTS_CONFIG = {
   maxLength: 500,
   maxDepth: 10, // Profondeur maximale de threading
-  defaultSort: 'best' as const,
+  defaultSort: "best" as const,
   pagination: {
     defaultLimit: 50,
     maxLimit: 200,
@@ -63,9 +52,9 @@ export const MENTIONS_CONFIG = {
   minQueryLength: 1,
   searchDelay: 300, // ms de debounce
   types: {
-    users: { prefix: '@', color: '#3b82f6' },
-    places: { prefix: '@', color: '#10b981' },
-    businesses: { prefix: '@', color: '#f59e0b' },
+    users: { prefix: "@", color: "#3b82f6" },
+    places: { prefix: "@", color: "#10b981" },
+    businesses: { prefix: "@", color: "#f59e0b" },
   },
 } as const;
 
@@ -88,7 +77,7 @@ export const SEARCH_CONFIG = {
   },
   indexing: {
     minWordLength: 2,
-    stopWords: ['le', 'la', 'les', 'de', 'du', 'des', 'et', 'ou', 'un', 'une'],
+    stopWords: ["le", "la", "les", "de", "du", "des", "et", "ou", "un", "une"],
   },
 } as const;
 
@@ -100,10 +89,10 @@ export const MAP_CONFIG = {
     minZoom: 12,
     maxZoom: 18,
     bounds: {
-      north: 48.8350,
-      south: 48.7950,
-      east: 2.2650,
-      west: 2.2050,
+      north: 48.835,
+      south: 48.795,
+      east: 2.265,
+      west: 2.205,
     },
   },
   clustering: {
@@ -128,13 +117,13 @@ export const MODERATION_CONFIG = {
   reports: {
     maxPerUser: 10, // Par jour
     reasons: [
-      'SPAM',
-      'HARASSMENT', 
-      'INAPPROPRIATE_CONTENT',
-      'MISINFORMATION',
-      'OFF_TOPIC',
-      'DUPLICATE',
-      'OTHER'
+      "SPAM",
+      "HARASSMENT",
+      "INAPPROPRIATE_CONTENT",
+      "MISINFORMATION",
+      "OFF_TOPIC",
+      "DUPLICATE",
+      "OTHER",
     ],
   },
   queue: {
@@ -149,53 +138,18 @@ export const MODERATION_CONFIG = {
   },
 } as const;
 
-// Configuration des badges et récompenses
-export const BADGES_CONFIG = {
-  karma: {
-    updateInterval: 3600000, // 1 heure en ms
-    recalculateOnVote: true,
-  },
-  awards: {
-    communityPoints: {
-      dailyLimit: 1000,
-      earnRate: {
-        post: 10,
-        comment: 5,
-        vote: 1,
-      },
-    },
-    costs: {
-      'ami-foret': 100,
-      'gardien-patrimoine': 150,
-      'bon-voisin': 75,
-      'conteur': 200,
-      'meudonnais-coeur': 300,
-    },
-  },
-  special: {
-    'explorateur-meudon': {
-      requirement: 'post_in_all_zones',
-      zoneCount: 6,
-    },
-    'commentateur-actif': {
-      requirement: 'comment_count',
-      threshold: 50,
-    },
-  },
-} as const;
-
 // Configuration de l'upload de fichiers
 export const UPLOAD_CONFIG = {
   maxFileSize: 5 * 1024 * 1024, // 5MB
-  allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+  allowedTypes: ["image/jpeg", "image/png", "image/webp"],
   compression: {
     quality: 0.8,
     maxWidth: 1200,
     maxHeight: 1200,
   },
   storage: {
-    bucket: 'ilovemeudon-uploads',
-    region: 'auto',
+    bucket: "ilovemeudon-uploads",
+    region: "auto",
     publicUrl: process.env.R2_PUBLIC_URL,
   },
 } as const;
@@ -212,7 +166,7 @@ export const NOTIFICATIONS_CONFIG = {
   delivery: {
     inApp: true,
     email: false, // À implémenter plus tard
-    push: false,  // À implémenter plus tard
+    push: false, // À implémenter plus tard
   },
   retention: {
     days: 30,

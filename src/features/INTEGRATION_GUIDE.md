@@ -5,9 +5,10 @@
 ### 1. Système de Vote
 
 #### Composant VoteButtons
+
 ```tsx
-import { VoteButtons } from '@/features/voting/components/vote-buttons';
-import { useVoting } from '@/features/voting/hooks/use-voting';
+import { VoteButtons } from "@/features/voting/components/vote-buttons";
+import { useVoting } from "@/features/voting/hooks/use-voting";
 
 function MyPostComponent({ post }) {
   const voting = useVoting({
@@ -28,11 +29,15 @@ function MyPostComponent({ post }) {
 ```
 
 #### Actions Server-Side
+
 ```tsx
-import { voteAction, getVoteStats } from '@/features/voting/actions/vote.action';
+import {
+  voteAction,
+  getVoteStats,
+} from "@/features/voting/actions/vote.action";
 
 // Dans une Server Action
-export async function handleVote(postId: string, type: 'UPVOTE' | 'DOWNVOTE') {
+export async function handleVote(postId: string, type: "UPVOTE" | "DOWNVOTE") {
   const result = await voteAction({ postId, type });
   return result;
 }
@@ -41,7 +46,7 @@ export async function handleVote(postId: string, type: 'UPVOTE' | 'DOWNVOTE') {
 export async function getPostWithVotes(postId: string, userId?: string) {
   const post = await getPost(postId);
   const voteStats = await getVoteStats(postId, undefined, userId);
-  
+
   return { ...post, voteStats };
 }
 ```
@@ -49,20 +54,20 @@ export async function getPostWithVotes(postId: string, userId?: string) {
 ### 2. Système de Tags
 
 #### Utilisation des tags hiérarchiques
+
 ```tsx
-import { TAG_HIERARCHY } from '@/features';
+import { TAG_HIERARCHY } from "@/features";
 
 function TagSelector({ onTagSelect }) {
   return (
     <div>
       {Object.entries(TAG_HIERARCHY).map(([key, tag]) => (
         <div key={key}>
-          <h3>{tag.emoji} {key}</h3>
-          {tag.level2.map(subTag => (
-            <button 
-              key={subTag}
-              onClick={() => onTagSelect(key, subTag)}
-            >
+          <h3>
+            {tag.emoji} {key}
+          </h3>
+          {tag.level2.map((subTag) => (
+            <button key={subTag} onClick={() => onTagSelect(key, subTag)}>
               {subTag}
             </button>
           ))}
@@ -76,8 +81,9 @@ function TagSelector({ onTagSelect }) {
 ### 3. Géolocalisation
 
 #### Sélection de zone
+
 ```tsx
-import { MEUDON_ZONES } from '@/features';
+import { MEUDON_ZONES } from "@/features";
 
 function ZoneSelector({ onZoneSelect }) {
   return (
@@ -101,16 +107,20 @@ function ZoneSelector({ onZoneSelect }) {
 ### 4. Système de Commentaires
 
 #### Structure hiérarchique
-```tsx
-import { buildCommentTree, sortComments } from '@/features/comments/utils/comment-tree';
 
-function CommentSection({ comments, sortType = 'best' }) {
+```tsx
+import {
+  buildCommentTree,
+  sortComments,
+} from "@/features/comments/utils/comment-tree";
+
+function CommentSection({ comments, sortType = "best" }) {
   const sortedComments = sortComments(comments, sortType);
   const commentTree = buildCommentTree(sortedComments);
 
   return (
     <div>
-      {commentTree.map(node => (
+      {commentTree.map((node) => (
         <CommentNode key={node.comment.id} node={node} />
       ))}
     </div>
@@ -121,7 +131,7 @@ function CommentNode({ node, depth = 0 }) {
   return (
     <div style={{ marginLeft: depth * 20 }}>
       <div>{node.comment.content}</div>
-      {node.children.map(child => (
+      {node.children.map((child) => (
         <CommentNode key={child.comment.id} node={child} depth={depth + 1} />
       ))}
     </div>
@@ -132,29 +142,35 @@ function CommentNode({ node, depth = 0 }) {
 ### 5. Système de Mentions
 
 #### Parser les mentions
+
 ```tsx
-import { parseMentions, renderMentionsAsHTML } from '@/features/mentions/utils/mention-parser';
+import {
+  parseMentions,
+  renderMentionsAsHTML,
+} from "@/features/mentions/utils/mention-parser";
 
 function PostContent({ content }) {
   const mentions = parseMentions(content);
   const htmlContent = renderMentionsAsHTML(content, mentions);
-  
-  return (
-    <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-  );
+
+  return <div dangerouslySetInnerHTML={{ __html: htmlContent }} />;
 }
 ```
 
 #### Autocomplétion
+
 ```tsx
-import { extractCurrentMention, filterSuggestions } from '@/features/mentions/utils/mention-parser';
+import {
+  extractCurrentMention,
+  filterSuggestions,
+} from "@/features/mentions/utils/mention-parser";
 
 function MentionInput({ value, onChange, suggestions }) {
   const [cursorPosition, setCursorPosition] = useState(0);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const currentMention = extractCurrentMention(value, cursorPosition);
-  const filteredSuggestions = currentMention 
+  const filteredSuggestions = currentMention
     ? filterSuggestions(suggestions, currentMention.query)
     : [];
 
@@ -178,11 +194,15 @@ function MentionInput({ value, onChange, suggestions }) {
 ### 6. Recherche Avancée
 
 #### Parser les requêtes
+
 ```tsx
-import { parseSearchQuery, buildSearchQuery } from '@/features/search/utils/search-parser';
+import {
+  parseSearchQuery,
+  buildSearchQuery,
+} from "@/features/search/utils/search-parser";
 
 function SearchBar({ onSearch }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const handleSearch = () => {
     const { cleanQuery, filters } = parseSearchQuery(query);
@@ -202,48 +222,28 @@ function SearchBar({ onSearch }) {
 }
 ```
 
-### 7. Système de Badges
-
-#### Affichage des badges
-```tsx
-import { KARMA_BADGES, LOCAL_AWARDS } from '@/features/badges/types';
-
-function UserBadges({ user }) {
-  const karmaBadge = getKarmaBadge(user.karma);
-  
-  return (
-    <div className="flex gap-2">
-      <Badge>
-        {KARMA_BADGES[karmaBadge].emoji} {KARMA_BADGES[karmaBadge].name}
-      </Badge>
-      {user.awards?.map(award => (
-        <Badge key={award.id}>
-          {LOCAL_AWARDS[award.type].emoji} {LOCAL_AWARDS[award.type].name}
-        </Badge>
-      ))}
-    </div>
-  );
-}
-```
-
 ## 🔧 Bonnes Pratiques
 
 ### 1. Gestion d'État
+
 - Utilisez les hooks personnalisés pour la logique métier
 - Implémentez des mises à jour optimistes pour une meilleure UX
 - Gérez les états de chargement et d'erreur
 
 ### 2. Performance
+
 - Utilisez React.memo pour les composants lourds
 - Implémentez la pagination pour les listes longues
 - Optimisez les images avec Next.js Image
 
 ### 3. Accessibilité
+
 - Ajoutez des labels ARIA appropriés
 - Gérez la navigation au clavier
 - Utilisez des couleurs contrastées
 
 ### 4. Tests
+
 - Testez les utilitaires avec Jest
 - Testez les composants avec React Testing Library
 - Testez les actions avec des mocks Prisma
@@ -251,10 +251,11 @@ function UserBadges({ user }) {
 ## 📊 Métriques à Suivre
 
 ### Engagement
+
 ```tsx
 // Exemple de tracking d'événements
 function trackVote(postId: string, voteType: string) {
-  analytics.track('post_voted', {
+  analytics.track("post_voted", {
     postId,
     voteType,
     timestamp: Date.now(),
@@ -263,10 +264,11 @@ function trackVote(postId: string, voteType: string) {
 ```
 
 ### Performance
+
 ```tsx
 // Mesurer les temps de réponse
 const startTime = performance.now();
-await voteAction({ postId, type: 'UPVOTE' });
+await voteAction({ postId, type: "UPVOTE" });
 const endTime = performance.now();
 console.log(`Vote took ${endTime - startTime} milliseconds`);
 ```

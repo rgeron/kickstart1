@@ -62,17 +62,7 @@ enum MeudonnaisZone {
   FORET_DOMANIALE
 }
 
-enum BadgeType {
-  NOUVEAU_MEUDONNAIS
-  HABITANT_CONFIRME
-  PILIER_COMMUNAUTE
-  LEGENDE_MEUDON
-  AMI_FORET
-  GARDIEN_PATRIMOINE
-  BON_VOISIN
-  CONTEUR
-  MEUDONNAIS_STAR
-}
+
 
 model Post {
   id        String   @id @default(uuid())
@@ -105,8 +95,7 @@ model Post {
   comments    Comment[]
   mentions    PostMention[]
 
-  // Statistiques calculées
-  karmaScore  Int @default(0)
+
 
   @@map("posts")
 }
@@ -125,9 +114,7 @@ model User {
   banReason     String?
   banExpires    DateTime?
 
-  // Système de karma et badges
-  karma         Int       @default(0)
-  badges        UserBadge[]
+
 
   sessions Session[]
   accounts Account[]
@@ -215,7 +202,6 @@ model Comment {
 
   // Système de votes pour commentaires
   votes CommentVote[]
-  karmaScore Int @default(0)
 
   @@map("comments")
 }
@@ -304,20 +290,7 @@ enum MentionType {
   COMMERCE      // @BoulangerieCentre
 }
 
-// Système de badges utilisateur
-model UserBadge {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  badgeType BadgeType
-  earnedAt  DateTime @default(now())
-
-  @@unique([userId, badgeType])
-  @@map("user_badges")
-}
 
 // Base de données des lieux de Meudon pour autocomplétion
 model MeudonLocation {
